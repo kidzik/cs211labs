@@ -1,23 +1,46 @@
-<h3>New session</h3>
-<form action="/teacher/" method="post">
-    {% csrf_token %}
-    {{ form }}
-    <input type="submit" value="Start a new session" />
-</form>
+{% extends "base.html" %}
 
-<h3>Sessions</h3>
-<table>
-<tr>
-<th>Session name</th><th>Experiment</th><th>Course</th><th>Time</th><th># students</th><th>Actions</th>
-{% for session in sessions %}
-<tr>
-<td>{{ session }}</td>
-<td>{{ session.experiment }}</td>
-<td>{{ session.course }}</td>
-<td>{{ session.time }}</td>
-<td>{{ session.user }}</td>
-<td><a href="">See results</a> <a href="">Close</a></td>
-</tr>
-{% endfor %}
-</tr>
-</table>
+{% block content %}
+
+<!-- Main jumbotron for a primary marketing message or call to action -->
+    <div class="jumbotron">
+      <div class="container">
+        <h2>Start a new session</h2>
+		<form class="form-signin" action="/teacher/" method="post">
+		    {% csrf_token %}
+		    {{ form }}
+		    <input type="submit"  class="btn btn-lg btn-primary" value="Start session" />
+		</form>
+      </div>
+    </div>
+
+    <div class="container">
+
+
+    	<div class="row">
+
+			<h2>Existing sessions</h2>
+			
+			<div class="table-responsive">
+				<table class="table table-striped">
+				<tr>
+				<th>Session name</th><th>Experiment</th><th>Course</th><th>Time</th><th># students</th><th>Actions</th>
+				{% for session in sessions %}
+				<tr>
+				<td>{{ session }}</td>
+				<td>{{ session.experiment }}</td>
+				<td>{{ session.course }}</td>
+				<td>{{ session.time }}</td>
+				<td>{{ session.user }}</td>
+				<td><a href="">See results</a> <a href="">Close</a></td>
+				</tr>
+				{% endfor %}
+				</tr>
+				
+				</table>
+			</div>
+		</div>
+
+	</div>
+
+{% endblock %}

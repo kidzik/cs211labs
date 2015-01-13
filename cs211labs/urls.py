@@ -1,5 +1,5 @@
 from django.conf.urls import patterns, include, url
-
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.contrib import admin
 from experiment.views import UserIndexView, SessionView, ExperimentView
 
@@ -11,6 +11,7 @@ urlpatterns = patterns('',
     url(r'^teacher/$', SessionView.as_view()),
     url(r'^experiment/(?P<id>\d+)/$', ExperimentView.as_view()),
     # url(r'^blog/', include('blog.urls')),
-
     url(r'^admin/', include(admin.site.urls)),
 )
+
+urlpatterns += staticfiles_urlpatterns()
