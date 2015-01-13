@@ -3,6 +3,7 @@ from django.views.generic import TemplateView, View
 from experiment.forms import UserForm, SessionForm
 from django.views.generic.edit import FormView
 from experiment.models import Session
+from django.shortcuts import redirect
 
 class UserIndexView(FormView):
     template_name = 'user_index.html'
@@ -31,3 +32,14 @@ class SessionView(FormView):
 class ExperimentView(TemplateView):
     def get_template_names(self):
         return ["experiments/" + self.kwargs['id'] + ".html"]
+
+class SessionManagementView(View):
+    def get(self, *args, **kwargs):
+        s = Session.objects.get(id=self.kwargs['id'])
+        if self.kwargs['action'] == "open":
+            s.closed = False
+        if self.kwargs['action'] == "close":
+            s.closed = True
+        s.save()
+        return redirect('teacher')
+

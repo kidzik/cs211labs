@@ -26,19 +26,30 @@
 				<tr>
 				<th>Session name</th><th>Experiment</th><th>Course</th><th>Time</th><th># students</th><th>Actions</th>
 				{% for session in sessions %}
-				<tr>
-				<td>{{ session }}</td>
-				<td>{{ session.experiment }}</td>
-				<td>{{ session.course }}</td>
-				<td>{{ session.time }}</td>
-				<td>{{ session.user }}</td>
-				<td><a href="">See results</a> <a href="">Close</a></td>
-				</tr>
+					<tr>
+					<td>{{ session }}</td>
+					<td>{{ session.experiment }}</td>
+					<td>{{ session.course }}</td>
+					<td>{{ session.time }}</td>
+					<td>{{ session.num_students }}</td>
+					<td><a href="{% url "results" session.id %}">See results</a>
+					{% if session.closed %}
+						<a href="{% url "session_management" "open" session.id %}">Open</a>
+					{% else %}
+						<a href="{% url "session_management" "close" session.id %}">Close</a>
+					{% endif %}
+					</td>
+					</tr>
 				{% endfor %}
 				</tr>
-				
 				</table>
+
 			</div>
+		</div>
+
+		<div class="row">
+			<h2>Admin</h2>
+			<a href="{% url "logout"%}">Logout</a>			
 		</div>
 
 	</div>
