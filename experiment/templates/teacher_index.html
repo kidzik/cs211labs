@@ -15,9 +15,17 @@
 <td>{{ session.experiment }}</td>
 <td>{{ session.course }}</td>
 <td>{{ session.time }}</td>
-<td>{{ session.user }}</td>
-<td><a href="">See results</a> <a href="">Close</a></td>
+<td>{{ session.num_students }}</td>
+<td><a href="{% url "results" session.id %}">See results</a>
+{% if session.closed %}
+<a href="{% url "session_management" "open" session.id %}">Open</a>
+{% else %}
+<a href="{% url "session_management" "close" session.id %}">Close</a>
+{% endif %}
+</td>
 </tr>
 {% endfor %}
 </tr>
 </table>
+<h3>Admin</h3>
+<a href="{% url "logout"%}">Logout</a>

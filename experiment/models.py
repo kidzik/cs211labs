@@ -21,7 +21,7 @@ class Session(models.Model):
     def __str__(self):
         return self.experiment.slug.__str__() + "-" + self.course.__str__()
 
-    def students(self):
+    def num_students(self):
         return self.user_set.all().count()
 
 class User(models.Model):
