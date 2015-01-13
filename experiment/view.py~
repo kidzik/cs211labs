@@ -1,0 +1,8 @@
+# some_app/views.py
+from django.views.generic import TemplateView
+
+class UserIndexView(TemplateView):
+    template_name = "user_index.html"
+
+class TeacherIndexView(TemplateView):
+    template_name = "teacher_index.html"

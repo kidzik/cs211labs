@@ -1,0 +1,5 @@
+# some_app/views.py
+from django.views.generic import TemplateView
+
+class UserIndexView(TemplateView):
+    template_name = "user_index.html"
