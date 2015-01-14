@@ -109,3 +109,4 @@ STATICFILES_DIRS = (
     ),
 )
 
+FIXTURE_DIRS = ( os.path.join(BASE_DIR,'fixtures/'))

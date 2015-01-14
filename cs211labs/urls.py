@@ -1,7 +1,8 @@
+from django.views.generic import TemplateView, View
 from django.conf.urls import patterns, include, url
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.contrib import admin
-from experiment.views import UserIndexView, SessionView, SessionManagementView, ExperimentView
+from experiment.views import UserIndexView, SessionView, SessionManagementView, ExperimentView, SubmitResultView
 from analytics.views import ResultsView
 
 from django.contrib.auth.decorators import login_required
@@ -10,6 +11,7 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     url(r'^$', UserIndexView.as_view(), name='start'),
+    url(r'^experiment/completed/$', TemplateView.as_view(template_name="experiments/completed.html"), name='completed'),
     url(r'^experiment/(?P<id>\d+)/$', ExperimentView.as_view(), name='experiment'),
 
     url(r'^accounts/login/$', 'django.contrib.auth.views.login', name='login'),
@@ -18,9 +20,11 @@ urlpatterns = patterns('',
     url(r'^results/(?P<id>\d+)/$', login_required(ResultsView.as_view()), name='results'),
     url(r'^session/(?P<action>\w+)/(?P<id>\d+)/$', login_required(SessionManagementView.as_view()),
         name='session_management'),
-    url(r'^acco$', UserIndexView.as_view(), name='start'),
+
+    url(r'^result/submit/$', SubmitResultView.as_view(), name='submit_result'),
+
     # url(r'^blog/', include('blog.urls')),
-    # url(r'^admin/', include(admin.site.urls)),
+    url(r'^admin/', include(admin.site.urls)),
 )
 
 urlpatterns += staticfiles_urlpatterns()

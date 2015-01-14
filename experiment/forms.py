@@ -17,6 +17,11 @@ class UserForm(ModelForm):
         model = User
         fields = ['session', 'device']
 
+    # Choose only open session
+    def __init__(self, *args, **kwargs):
+        super(UserForm, self).__init__(*args, **kwargs)
+        self.fields['session'].queryset = self.fields['session'].queryset.exclude(closed=True)
+
 class SessionForm(ModelForm):
     class Meta:
         model = Session

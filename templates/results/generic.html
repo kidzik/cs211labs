@@ -1,0 +1,74 @@
+{% load staticfiles %}
+<html><head>
+    <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" media="screen">
+
+    <style>
+      .results {
+         text-align: center;
+      }
+      #charts div {
+         display: block;
+         margin: 0 auto !important;
+      }
+    </style>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+
+      // Load the Visualization API and the piechart package.
+      google.load('visualization', '1.0', {'packages':['corechart']});
+
+      // Set a callback to run when the Google Visualization API is loaded.
+      google.setOnLoadCallback(onLoad);
+
+      function drawChart(data, title, variable) {
+        // Create the data table.
+        var dataTable = new google.visualization.DataTable();
+        dataTable.addColumn('string', 'Mode');
+        dataTable.addColumn('number', variable);
+        dataTable.addRows(data);
+
+        // Set chart options
+        var options = {'title':title,
+                       'width':600,
+                       'height':500,
+                       'titleTextStyle': {fontSize: 20}};
+
+        // Instantiate and draw our chart, passing in some options.
+        var charts = document.getElementById('charts');
+        var newChart = document.createElement('div');
+        var content = document.createTextNode('test');
+        newChart.appendChild(content);
+
+        charts.appendChild(newChart);
+
+        var chart = new google.visualization.BarChart(newChart);
+        chart.draw(dataTable, options);
+
+      }
+
+      {% autoescape off %}
+      function onLoad() {
+        {% for res in results %}
+        drawChart({{ res.data }}, "{{ res.title }}", "{{ res.var }}");
+        {% endfor %}
+      }
+      {% endautoescape %}
+    </script>
+
+
+</head>
+
+<body>
+
+<div class="results">
+<h1>Results of the session {{ session }}</h1>
+Students completed: {{ session.num_students_completed }} / {{ session.num_students }}
+</div>
+
+
+<div id="charts">
+</div>
+
+
+</body>
+</html>

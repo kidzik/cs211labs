@@ -1,0 +1,176 @@
+[
+  {
+    "model": "experiment.experiment",
+    "pk": 1,
+    "fields": {
+      "name": "The Train Tickets Game",
+      "slug": "CS211-1-TRAIN"
+    }
+  },
+  {
+    "model": "experiment.experiment",
+    "pk": 2,
+    "fields": {
+      "name": "The STROOP effect",
+      "slug": "CS211-2-STROOP"
+    }
+  },
+  {
+    "model": "experiment.experiment",
+    "pk": 3,
+    "fields": {
+      "name": "The Genealogy Game",
+      "slug": "CS211-3-GENEALOGY"
+    }
+  },
+  {
+    "model": "experiment.experiment",
+    "pk": 4,
+    "fields": {
+      "name": "The Dual Task",
+      "slug": "CS211-4-DUAL"
+    }
+  },
+  {
+    "model": "experiment.experiment",
+    "pk": 5,
+    "fields": {
+      "name": "The Fitt's Law",
+      "slug": "CS211-5-FITT"
+    }
+  },
+  {
+    "model": "experiment.course",
+    "pk": 1,
+    "fields": {
+      "name": "CS211-2015",
+      "slug": "CS211 2015"
+    }
+  },
+  {
+    "model": "experiment.session",
+    "pk": 1,
+    "fields": {
+      "experiment": 2,
+      "course": 1,
+      "time": "14:54:28",
+      "closed": 0
+    }
+  },
+  {
+    "model": "experiment.user",
+    "pk": 1,
+    "fields": {
+      "session": 1,
+      "device": "T",
+      "completed": 1
+    }
+  },
+  {
+    "model": "experiment.user",
+    "pk": 2,
+    "fields": {
+      "session": 1,
+      "device": "T",
+      "completed": 0
+    }
+  },
+  {
+    "model": "experiment.user",
+    "pk": 3,
+    "fields": {
+      "session": 1,
+      "device": "T",
+      "completed": 0
+    }
+  },
+  {
+    "model": "experiment.user",
+    "pk": 4,
+    "fields": {
+      "session": 1,
+      "device": "T",
+      "completed": 0
+    }
+  },
+  {
+    "model": "experiment.user",
+    "pk": 5,
+    "fields": {
+      "session": 1,
+      "device": "T",
+      "completed": 0
+    }
+  },
+  {
+    "model": "experiment.result",
+    "pk": 1,
+    "fields": {
+      "user": 1,
+      "key": "1/correct/consistent/red/red/errors",
+      "value": 1    }
+  },
+  {
+    "model": "experiment.result",
+    "pk": 2,
+    "fields": {
+      "user": 1,
+      "key": "2/correct/inconsistent/red/yellow/errors",
+      "value": 1
+    }
+  },
+  {
+    "model": "experiment.result",
+    "pk": 3,
+    "fields": {
+      "user": 1,
+      "key": "1/incorrect/consistent/yellow/red/errors",
+      "value": 0
+    }
+  },
+  {
+    "model": "experiment.result",
+    "pk": 4,
+    "fields": {
+      "user": 1,
+      "key": "2/incorrect/inconsistent/blue/green/errors",
+      "value": 1
+    }
+  },
+  {
+    "model": "experiment.result",
+    "pk": 5,
+    "fields": {
+      "user": 1,
+      "key": "1/correct/consistent/red/red/time",
+      "value": 334
+    }
+  },
+  {
+    "model": "experiment.result",
+    "pk": 6,
+    "fields": {
+      "user": 1,
+      "key": "2/correct/inconsistent/red/yellow/time",
+      "value": 532
+    }
+  },
+  {
+    "model": "experiment.result",
+    "pk": 7,
+    "fields": {
+      "user": 1,
+      "key": "1/incorrect/consistent/yellow/red/time",
+      "value": 234
+    }
+  },
+  {
+    "model": "experiment.result",
+    "pk": 8,
+    "fields": {
+      "user": 1,
+      "key": "2/incorrect/inconsistent/blue/green/time",
+      "value": 555
+    }
+  }
+]
