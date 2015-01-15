@@ -1,0 +1,12 @@
+1. Development
+pip install Django==1.6.1
+python manage.py syncdb
+python manage.py runserver
+
+1.1. Testing
+python manage.py test
+
+2. Production
+
+Apache configuration:
+TODO
