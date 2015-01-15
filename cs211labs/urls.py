@@ -4,6 +4,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.contrib import admin
 from experiment.views import UserIndexView, SessionView, SessionManagementView, ExperimentView, SubmitResultView
 from analytics.views import ResultsView
+from django.views.decorators.csrf import csrf_exempt
 
 from django.contrib.auth.decorators import login_required
 
@@ -21,7 +22,7 @@ urlpatterns = patterns('',
     url(r'^session/(?P<action>\w+)/(?P<id>\d+)/$', login_required(SessionManagementView.as_view()),
         name='session_management'),
 
-    url(r'^result/submit/$', SubmitResultView.as_view(), name='submit_result'),
+    url(r'^result/submit/$', csrf_exempt(SubmitResultView.as_view()), name='submit_result'),
 
     # url(r'^blog/', include('blog.urls')),
     url(r'^admin/', include(admin.site.urls)),

@@ -31,8 +31,13 @@ class User(models.Model):
     session = models.ForeignKey(Session)
     device = models.CharField(max_length=50)
     completed = models.BooleanField()
-    
+    def __str__(self):
+        return self.id.__str__()
+
 class Result(models.Model):
     user = models.ForeignKey(User)
     key = models.CharField(max_length=255)
     value = models.CharField(max_length=50)    
+
+    def __str__(self):
+        return "%s: %s -> %s" % (self.user.__str__(), self.key.__str__(), self.value.__str__())

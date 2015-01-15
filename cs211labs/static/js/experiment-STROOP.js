@@ -6,7 +6,7 @@ var timeshelp = 0; //times the user asked for help
 var timetask = 0; // time employed in doing the current task
 var timehelp = 0; // time employed in help mode
 var task_time = 3; // time to do each task, in seconds
-var pause_time = 5; // pause between each task, in seconds
+var pause_time = 1; // pause between each task, in seconds
 var current_task = 0; //index of the current task
 var on_task = false; //denotes whether we are on a task - to capture the keypresses
 var on_modal = false; //denotes whether we are on the modal window - to not capture keypresses
@@ -291,18 +291,18 @@ function finishExperiment(){
 	console.log("Experiment finished! go back to beginning");
 
 	//Build the JS object for the results
-	var data = {
+        var data = {
 		'user_id': user_id,
-		'user_profile': user_profile,
-		'data': results
+		'user_profile': JSON.stringify(user_profile),
+		'data': JSON.stringify(results)
 	}
-	var payload = JSON.stringify(data);
+        //var payload = JSON.stringify(data);
 	//Do Ajax POST to /result/submit
-	console.log(payload);
+	console.log(data);
 	var request = $.ajax({
 	  type: "POST",
 	  url: "/result/submit/",
-	  data: payload,
+	  data: data,
 	  dataType: "json"
 	});
 	request.done(showFinalGoodbye);

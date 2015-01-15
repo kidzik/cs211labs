@@ -1,7 +1,7 @@
 from . import ExperimentProcessor
 
 class ExperimentSTROOPProcessor(ExperimentProcessor):
-    def parse_json(self, data):
+    def map_results(self, data, profile):
         # Format: list of
         # {
         #  "ordinal": 2,
@@ -14,16 +14,18 @@ class ExperimentSTROOPProcessor(ExperimentProcessor):
         # }
 
         data = super(ExperimentSTROOPProcessor, self).parse_json(data)
+        profile = super(ExperimentSTROOPProcessor, self).parse_json(profile)
 
         results = {}
 
         for el in data:
             s = ""
             s = s + el['ordinal'].__str__() + "/"
-            s = s + ("c" if el['correct'] else "i") + "/"
-            s = s + ("c" if el['consistent'] else "i") + "/"
+            s = s + ("correct" if el['correct'] else "incorrect") + "/"
+            s = s + ("consistent" if el['consistent'] else "inconsistent") + "/"
             s = s + el['color_tex'] + "/"
             s = s + el['color_vis'] + "/"
+            s = s + ("colorblind" if profile['colorblind'] else "notcolorblind") + "/"
             results[s + "errors"] = 0 if el['outcome_corr'] else 1
             results[s + "time"] = el['time'].__str__()
 
@@ -42,10 +44,11 @@ class ExperimentSTROOPProcessor(ExperimentProcessor):
         super(ExperimentSTROOPProcessor, self).process_results(results)
         processed = []
 
-        processed.append({'data': self.get_data(results, "errors", 5, 2, ["consistent","inconsistent"]), 'title': "Mean errors per mode", 'var': "Mean errors"})
-        processed.append({'data': self.get_data(results, "time", 5, 2, ["consistent","inconsistent"]), 'title': "Mean response time per mode", 'var': "Mean response time"})
-        processed.append({'data': self.get_data(results, "errors", 5, 3, ["red","blue","green","yellow","brown"]), 'title': "Mean errors per text color", 'var': "Mean errors"})
-        processed.append({'data': self.get_data(results, "errors", 5, 4, ["red","blue","green","yellow","brown"]), 'title': "Mean errors per text semantics", 'var': "Mean errors"})
+        processed.append({'data': self.get_data(results, "errors", 6, 2, ["consistent","inconsistent"]), 'title': "Mean errors per mode", 'var': "Mean errors"})
+
+        processed.append({'data': self.get_data(results, "time", 6, 2, ["consistent","inconsistent"]), 'title': "Mean response time per mode", 'var': "Mean response time"})
+        processed.append({'data': self.get_data(results, "errors", 6, 3, ["red","blue","green","yellow","brown"]), 'title': "Mean errors per text color", 'var': "Mean errors"})
+        processed.append({'data': self.get_data(results, "errors", 6, 4, ["red","blue","green","yellow","brown"]), 'title': "Mean errors per text semantics", 'var': "Mean errors"})
  
         return processed
 

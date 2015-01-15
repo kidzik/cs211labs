@@ -1,3 +1,5 @@
+import simplejson
+
 class ExperimentProcessor(object):
     """
     A base class for each experiment processor.
@@ -14,6 +16,9 @@ class ExperimentProcessor(object):
     def parse_json(self, data):
         return simplejson.loads(data)
 
+    def map_results(self, data, profile):
+        pass
+
     def mean_values(self, results):
         s = 0
         n = 0
@@ -22,7 +27,7 @@ class ExperimentProcessor(object):
             s = s + int(res.value)
         if n == 0:
             return 0
-        return s/n
+        return float(s)/float(n)
 
     # generates regular expression */*/level[
     def gen_reg_exp(self, nvars, dep, levels):

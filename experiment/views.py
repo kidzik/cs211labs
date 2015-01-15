@@ -65,7 +65,9 @@ class SubmitResultView(View):
 
         ep = EXPERIMENT_CLASSES[u.session.experiment.slug]()
         data = request.POST['data']
-        parsed = ep.parse_json(data)
+        user_profile = request.POST['user_profile']
+
+        parsed = ep.map_results(data, user_profile)
 
         for key, val in parsed.iteritems():
             r = Result()

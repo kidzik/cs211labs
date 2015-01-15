@@ -1,5 +1,6 @@
 1. Development
 pip install Django==1.6.1
+pip install simplejson
 python manage.py syncdb
 python manage.py runserver
 
@@ -8,5 +9,23 @@ python manage.py test
 
 2. Production
 
-Apache configuration:
-TODO
+Add in apache '/etc/apache/sites-enabled' a file '001-cs211labs', with sth like:
+
+""" 
+WSGIPythonPath /var/www/cs211labs
+
+<VirtualHost cs211labs.epfl.ch:80>
+	ServerAdmin kidzinsk@epfl.ch
+	ServerName cs211labs.epfl.ch
+	DocumentRoot /var/www/cs211labs
+	WSGIScriptAlias /cs211labs /var/www/cs211labs/cs211labs/wsgi.py
+	
+	<Directory /var/www/cs211labs/cs211labs>
+		<Files wsgi.py>
+		Require all granted
+		</Files>
+	</Directory> 
+</VirtualHost>
+"""
+
+Where '/var/www/cs211labs' is the project root directory

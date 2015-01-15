@@ -1,8 +1,9 @@
 from . import ExperimentProcessor
 
 class ExperimentTrainProcessor(ExperimentProcessor):
-    def parse_json(self, data):
+    def map_results(self, data, profile):
         data = super(ExperimentSTROOPProcessor, self).parse_json(data)
+        profile = super(ExperimentSTROOPProcessor, self).parse_json(profile)
         results = []
 
         return results

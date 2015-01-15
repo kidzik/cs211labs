@@ -1,7 +1,7 @@
 from . import ExperimentProcessor
 
 class ExperimentGenealogyProcessor(ExperimentProcessor):
-    def parse_json(self, data):
+    def map_results(self, data, profile):
         # Format: list of
         # {
         #  "ordinal": 2,
@@ -10,7 +10,8 @@ class ExperimentGenealogyProcessor(ExperimentProcessor):
         #  "time": 240
         # }
 
-        data = super(ExperimentGenealogyProcessor, self).parse_json(data)
+        data = super(ExperimentSTROOPProcessor, self).parse_json(data)
+        profile = super(ExperimentSTROOPProcessor, self).parse_json(profile)
 
         results = {}
 
