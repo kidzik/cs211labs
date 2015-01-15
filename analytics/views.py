@@ -28,5 +28,5 @@ class ResultsView(TemplateView):
         processed_results = ep.process_results(results)
 
         context = {"results": processed_results, "session": session}
-        return render(request, "results/generic.html", context)
+        return render(request, "analytics/generic.html", context)
 

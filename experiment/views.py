@@ -19,7 +19,6 @@ class UserIndexView(FormView):
         form.instance.completed = False
         form.save()
         self.request.session["user_id"] = form.instance.id
-        self.success_url = self.success_url + form.instance.session.experiment.id.__str__() + '/'
         return super(UserIndexView, self).form_valid(form)
 
 class SessionView(FormView):
@@ -52,7 +51,8 @@ class ExperimentView(TemplateView):
         return context
 
     def get_template_names(self):
-        return ["experiments/" + self.kwargs['id'] + ".html"]
+        u = User.objects.get(id = self.request.session["user_id"])
+        return ["experiments/" + u.session.experiment.slug + ".html"]
 
 class SubmitResultView(View):
     """

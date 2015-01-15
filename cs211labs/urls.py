@@ -12,7 +12,7 @@ admin.autodiscover()
 urlpatterns = patterns('',
     url(r'^$', UserIndexView.as_view(), name='start'),
     url(r'^experiment/completed/$', TemplateView.as_view(template_name="experiments/completed.html"), name='completed'),
-    url(r'^experiment/(?P<id>\d+)/$', ExperimentView.as_view(), name='experiment'),
+    url(r'^experiment/$', ExperimentView.as_view(), name='experiment'),
 
     url(r'^accounts/login/$', 'django.contrib.auth.views.login', name='login'),
                        url(r'^accounts/logout/$', 'django.contrib.auth.views.logout', {'next_page': '/teacher/'}, name='logout'),

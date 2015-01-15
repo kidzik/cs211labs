@@ -3,8 +3,22 @@
 {% load staticfiles %}
 
 {% block content %}
-    <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" media="screen">
+    <div class="jumbotron">
+      <div class="container">
+	<h2>Results of the session {{ session }}</h2>
+	Students completed: {{ session.num_students_completed }} / {{ session.num_students }}
+      </div>
+    </div>
 
+
+<div class="container">
+  <div id="charts">
+  </div>
+</div>
+{% endblock %}
+
+
+{% block scripts %}
     <style>
       .results {
          text-align: center;
@@ -58,15 +72,4 @@
       {% endautoescape %}
     </script>
 
-
-<div class="results">
-<h1>Results of the session {{ session }}</h1>
-Students completed: {{ session.num_students_completed }} / {{ session.num_students }}
-</div>
-
-
-<div id="charts">
-</div>
-{% endblock %}
-
-
+{% endblock scripts %}
