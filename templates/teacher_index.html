@@ -31,7 +31,7 @@
 					<td>{{ session.experiment }}</td>
 					<td>{{ session.course }}</td>
 					<td>{{ session.time }}</td>
-					<td>{{ session.num_students }}</td>
+					<td>{{ session.num_students_completed }} / {{ session.num_students }}</td>
 					<td><a href="{% url "results" session.id %}">See results</a>
 					{% if session.closed %}
 						<a href="{% url "session_management" "open" session.id %}">Open</a>
