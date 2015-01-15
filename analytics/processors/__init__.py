@@ -1,0 +1,6 @@
+from ExperimentProcessor import ExperimentProcessor
+from ExperimentTrainProcessor import ExperimentTrainProcessor
+from ExperimentSTROOPProcessor import ExperimentSTROOPProcessor
+from ExperimentGenealogyProcessor import ExperimentGenealogyProcessor
+from ExperimentFittsProcessor import ExperimentFittsProcessor
+from ExperimentDualProcessor import ExperimentDualProcessor

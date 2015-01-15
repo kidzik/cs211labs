@@ -1,5 +1,8 @@
+{% extends "base.html" %}
+
 {% load staticfiles %}
-<html><head>
+
+{% block content %}
     <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" media="screen">
 
     <style>
@@ -56,10 +59,6 @@
     </script>
 
 
-</head>
-
-<body>
-
 <div class="results">
 <h1>Results of the session {{ session }}</h1>
 Students completed: {{ session.num_students_completed }} / {{ session.num_students }}
@@ -68,7 +67,6 @@ Students completed: {{ session.num_students_completed }} / {{ session.num_studen
 
 <div id="charts">
 </div>
+{% endblock %}
 
 
-</body>
-</html>
