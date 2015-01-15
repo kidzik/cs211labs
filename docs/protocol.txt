@@ -2,7 +2,11 @@
 
 2. STROOP effect
 Format of json input: list of
-{
+{'user_id': 1,
+'user_profile': {
+  "colorblind": true
+},
+'data': [{
   "ordinal": 2,
   "correct": true,
   "consistent": true,
@@ -10,7 +14,7 @@ Format of json input: list of
   "color_tex": 'red',
   "outcome_corr": true,
   "time": 240
-}
+}]}
 
 Format of database entryy:
 - experiment in a row 1-5
