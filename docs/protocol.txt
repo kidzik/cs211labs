@@ -7,7 +7,7 @@ Format of json input: list of
   "colorblind": true
 },
 'data': [{
-  "ordinal": 2,
+  "ordinal": 2, //zero-based
   "correct": true,
   "consistent": true,
   "color_vis": 'blue',

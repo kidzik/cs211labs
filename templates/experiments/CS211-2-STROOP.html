@@ -3,7 +3,7 @@
 {% load staticfiles %}
 
 {% block content %}
-{{ user_id }}
+
 
 	<div id="introExperimentModal" class="modal fade">
 	    <div class="modal-dialog">
@@ -36,6 +36,26 @@
 	        </div>
 	    </div>
 	</div>
+
+<div id="endModal" class="modal fade">
+	    <div class="modal-dialog">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	                <button id="closetrbutton" type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	                <h2 class="modal-title">The STROOP effect</h2>
+	            </div>
+	            <div class="modal-body">
+	                <p>Thanks a lot for your participation!</p>
+
+	            </div>
+
+	            <div class="modal-footer">
+	                <button type="button" class="btn btn-default" id="endBackHome" data-loading-text="Sending your results to our servers..." data-dismiss="modal">Back to home</button>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+
 
 		<div class="panel panel-default">
             <div class="panel-heading">
@@ -88,6 +108,8 @@
 	$(document).ready(function(){
 			init();
 		});
+
+	var user_id = {{ user_id }};
     </script>
 
 {% endblock %}

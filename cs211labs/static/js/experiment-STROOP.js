@@ -19,7 +19,9 @@ var total_help_time = 0; //total time spent in help during this task
 //We define the structure of the result object
 var data;//This will store the current task's data
 var user_profile = {colorblind: false};//This will store the current user profile information, to be set in the intro phase
+var results = [];
 
+//These are the STROOP phrases
 var phrases = [
 {htmlText: "The color of lemons is <span class='yellow'>yellow</span>", correct: true, consistent: true, color_text: "yellow", color_visual: "yellow"},
 {htmlText: "The color of blood is <span class='red'>red</span>", correct: true, consistent: true, color_text: "red", color_visual: "red"},
@@ -85,6 +87,12 @@ function init(){
 	//We do the initial shuffle of the phrases
 	shuffle(phrases);
 
+	//We hide and add behavior to the ending modal window
+	$('#endModal').hide();
+	$('#endModal').on('hide.bs.modal', function () {
+		window.location.href = '/';
+	});
+
 	//We start the counters as soon as the modal window is closed
 	$('#introExperimentModal').on('hide.bs.modal', function () {
 		on_modal=false;
@@ -100,7 +108,7 @@ function init(){
     	}
 
    		intro = false; //Next time, the intro will be in help mode
-  	})
+  	});
 
   	$('#introExperimentModal').on('show.bs.modal', function () {
   		on_modal=true;
@@ -108,7 +116,7 @@ function init(){
     	if(!intro && on_task){//if it is not the intro and we are on track, we are tracking help time
 	    	help_timestamp = (new Date()).getTime();
 	    }
-  	})
+  	});
 
 	//We show the intro window
 	showModal(intro);
@@ -200,42 +208,63 @@ function startTask(){
 
 function endTask(){
 
-	//We decide if the task was correct?
-	console.log("ended task - correctly? "+current_task_success + " in " + (current_task_elapsed_time - total_help_time) + " ms. BTW, user colorblind " + user_profile.colorblind);
-	//We send the data to the database, or store it locally
+	if(current_task<num_tasks){// Just in case, it looks like this is called two times on ending
+		//We decide if the task was correct?
+		console.log("ended task - correctly? "+current_task_success + " in " + (current_task_elapsed_time - total_help_time) + " ms. BTW, user colorblind " + user_profile.colorblind);
+		//We send the data to the database, or store it locally
+		var result = {
+		  "ordinal": current_task,
+		  "correct": phrases[current_task].correct,
+		  "consistent": phrases[current_task].consistent,
+		  "color_vis": phrases[current_task].color_visual,
+		  "color_tex": phrases[current_task].color_text,
+		  "outcome_corr": current_task_success,
+		  "time": (current_task_elapsed_time - total_help_time)
+		};
+		results.push(result);
 
-	if(current_task<(phrases.length-1)){
-		//We display the big dot
-		$("#pauseStimulus").show();
-		$("#stimulus").hide();
+		if(current_task<(phrases.length-1)){
+			//We display the big dot
+			$("#pauseStimulus").show();
+			$("#stimulus").hide();
 
-		//We start and display the pause countdown
-		$('#initialMessage').hide();
-		$('#clocktask').hide();
-		$('#clockpauses').show();
-		$('#clocktask').countdown('option',{
-			onExpiry: null
-		});
-		$('#clockpauses').countdown('option',{
-				until: '+'+pause_time+'s', 
-		    	layout: 'Prepare yourself. The next task will start in {sn} {sl}...',
-		    	onExpiry: startTask
-	    	});
+			//We start and display the pause countdown
+			$('#initialMessage').hide();
+			$('#clocktask').hide();
+			$('#clockpauses').show();
+			$('#clocktask').countdown('option',{
+				onExpiry: null
+			});
+			$('#clockpauses').countdown('option',{
+					until: '+'+pause_time+'s', 
+			    	layout: 'Prepare yourself. The next task will start in {sn} {sl}...',
+			    	onExpiry: startTask
+		    	});
 
-		current_task++;
+			current_task++;
 
-		//We update the progress bar
-		var progress = Math.floor((current_task / num_tasks)*100);
-		//console.log('trying to update progress bar to '+progress);
-		$('#taskProgress').attr("aria-valuenow",progress);
-		$('#taskProgress').attr("style", "width: "+progress+"%");
-		$('#taskProgress').html(progress+" % done");
+			//We update the progress bar
+			var progress = Math.floor((current_task / num_tasks)*100);
+			//console.log('trying to update progress bar to '+progress);
+			$('#taskProgress').attr("aria-valuenow",progress);
+			$('#taskProgress').attr("style", "width: "+progress+"%");
+			$('#taskProgress').html(progress+" % done");
 
 
-		on_task = false;
+			on_task = false;
 
-	} else {
-		finishExperiment();
+		} else {
+			current_task++;
+
+			//We update the progress bar
+			var progress = Math.floor((current_task / num_tasks)*100);
+			//console.log('trying to update progress bar to '+progress);
+			$('#taskProgress').attr("aria-valuenow",progress);
+			$('#taskProgress').attr("style", "width: "+progress+"%");
+			$('#taskProgress').html(progress+" % done");
+
+			finishExperiment();
+		}
 	}
 
 }
@@ -261,7 +290,36 @@ function finishExperiment(){
 
 	console.log("Experiment finished! go back to beginning");
 
+	//Build the JS object for the results
+	var data = {
+		'user_id': user_id,
+		'user_profile': user_profile,
+		'data': results
+	}
+	var payload = JSON.stringify(data);
+	//Do Ajax POST to /result/submit
+	console.log(payload);
+	var request = $.ajax({
+	  type: "POST",
+	  url: "/result/submit/",
+	  data: payload,
+	  dataType: "json"
+	});
+	request.done(showFinalGoodbye);
+
+	//Show modal Thankyou window with loading animation
+	$('#endModal').show();
+	$('#closetrbutton').hide();
+	$('#endBackHome').button('loading');
 }
+
+function showFinalGoodbye(){
+
+	$('#endBackHome').button('reset');
+	$('#closetrbutton').show();
+
+}
+
 
 
 function showHelp(){
