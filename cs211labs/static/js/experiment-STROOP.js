@@ -125,7 +125,7 @@ function init(){
 
 	//We add the function to capture keypresses
 	$(document).keypress(function(e){
-		if(on_task && !on_modal){
+		if(on_task && !on_modal && current_task<num_tasks){
 	    	if(e.which == 89 || e.which == 121){// pressed y
 	    		if(phrases[current_task].correct) current_task_success=true;
 	    		else current_task_success=false;
@@ -290,13 +290,18 @@ function finishExperiment(){
 
 	console.log("Experiment finished! go back to beginning");
 
+	//Show modal Thankyou window with loading animation
+	$('#endModal').modal('show');
+	$('#closetrbutton').hide();
+	$('#endBackHome').button('loading');
+
 	//Build the JS object for the results
         var data = {
 		'user_id': user_id,
 		'user_profile': JSON.stringify(user_profile),
 		'data': JSON.stringify(results)
 	}
-        //var payload = JSON.stringify(data);
+
 	//Do Ajax POST to /result/submit
 	console.log(data);
 	var request = $.ajax({
@@ -305,16 +310,12 @@ function finishExperiment(){
 	  data: data,
 	  dataType: "json"
 	});
-	request.done(showFinalGoodbye);
+	request.always(showFinalGoodbye);
 
-	//Show modal Thankyou window with loading animation
-	$('#endModal').show();
-	$('#closetrbutton').hide();
-	$('#endBackHome').button('loading');
 }
 
 function showFinalGoodbye(){
-
+	console.log("Response received!");
 	$('#endBackHome').button('reset');
 	$('#closetrbutton').show();
 
