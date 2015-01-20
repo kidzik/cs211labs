@@ -1,26 +1,10 @@
 
-//States whether we are in "intro-mode" (explanation and initial user profile questions) or not
-var intro = true;
-var counters_initialized=false;
-var timeshelp = 0; //times the user asked for help
-var timetask = 0; // time employed in doing the current task
-var timehelp = 0; // time employed in help mode
-var task_time = 3; // time to do each task, in seconds
-var pause_time = 3; // pause between each task, in seconds
-var current_task = 0; //index of the current task
-var on_task = false; //denotes whether we are on a task - to capture the keypresses
-var on_modal = false; //denotes whether we are on the modal window - to not capture keypresses
-var current_task_success = false; //whether the current task has been successfully passed or not
-var current_task_timestamp = 0; //timestamp of the start of this task
-var current_task_elapsed_time = task_time*1000; //time taken to solve this task (until keypress)
-var help_timestamp = 0; //moment in which we accessed the help
-var total_help_time = 0; //total time spent in help during this task
+// TODO 1: Define the user profile useful for this task (to be shown as a form in the intro)
+//User profile for the STROOP task
+user_profile = {colorblind: false};
 
-//We define the structure of the result object
-var data;//This will store the current task's data
-var user_profile = {colorblind: false};//This will store the current user profile information, to be set in the intro phase
-var results = [];
-
+// TODO 2: Define any experiment-specific data structures
+//Data for the STROOP task
 //These are the STROOP phrases
 var phrases = [
 {htmlText: "The color of lemons is <span class='yellow'>yellow</span>", correct: true, consistent: true, color_text: "yellow", color_visual: "yellow"},
@@ -48,80 +32,14 @@ var phrases = [
 {htmlText: "The color of wood is <span class='red'>yellow</span>", correct: false, consistent: false, color_text: "yellow", color_visual: "red"}
 ];
 
-var num_tasks = phrases.length;
+// TODO 3: Define the number of tasks that will make up the workflow of the experiment for one subject
+num_tasks = phrases.length;
 
-function shuffle(array) {
-  var currentIndex = array.length, temporaryValue, randomIndex ;
+// TODO 4: Define the init-specific() function with 
+function init_specific(){
 
-  // While there remain elements to shuffle...
-  while (0 !== currentIndex) {
-
-    // Pick a remaining element...
-    randomIndex = Math.floor(Math.random() * currentIndex);
-    currentIndex -= 1;
-
-    // And swap it with the current element.
-    temporaryValue = array[currentIndex];
-    array[currentIndex] = array[randomIndex];
-    array[randomIndex] = temporaryValue;
-  }
-
-  return array;
-}
-
-
-
-function showModal(intromode){
-
-	if(intromode){ // It is in intro mode
-		$("#introExperimentModal").modal('show');
-		$("#modalProfile").css( "visibility", "visible" );
-	} else { // It is help mode
-		$("#modalProfile").css( "visibility", "hidden" );
-		$("#introExperimentModal").modal('show');
-	}
-
-}
-
-function init(){
 	//We do the initial shuffle of the phrases
 	shuffle(phrases);
-
-	//We hide and add behavior to the ending modal window
-	$('#endModal').hide();
-	$('#endModal').on('hide.bs.modal', function () {
-		window.location.href = '/';
-	});
-
-	//We start the counters as soon as the modal window is closed
-	$('#introExperimentModal').on('hide.bs.modal', function () {
-		on_modal=false;
-		if(!counters_initialized){
-			initCounters();	
-			counters_initialized=true;
-		}
-    	resumeCounters();
-
-    	if(!intro && on_task){//if it is not the intro and we are on task, we are tracking help time
-	    	var now = (new Date()).getTime();
-	    	total_help_time += (now - help_timestamp);
-    	}
-
-   		intro = false; //Next time, the intro will be in help mode
-  	});
-
-  	$('#introExperimentModal').on('show.bs.modal', function () {
-  		on_modal=true;
-    	pauseCounters();
-    	if(!intro && on_task){//if it is not the intro and we are on track, we are tracking help time
-	    	help_timestamp = (new Date()).getTime();
-	    }
-  	});
-
-	//We show the intro window
-	showModal(intro);
-
-	//for (i=0;i<phrases.length;i++) console.log(phrases[i].htmlText);
 
 	//We add the function to capture keypresses
 	$(document).keypress(function(e){
@@ -152,32 +70,18 @@ function init(){
 		}
 	});
 
-
 }
 
-function initCounters(){
-	//We display the big dot
-	$("#pauseStimulus").show();
-	$("#stimulus").hide();
 
-	//We start and display the pause countdown
-	$('#initialMessage').hide();
-	$('#clocktask').hide();
-	$('#clockpauses').show();
-	$('#clockpauses').countdown({
-			until: '+'+pause_time+'s', 
-	    	layout: 'Task will start in {sn}s...',
-	    	onExpiry: startTask
-    	});
-
-}
-
+// TODO 5: Define the startTask() function with whatever happens at the beginning of each task (show stimuli, countdown timers, initialize task timestamps)
 function startTask(){
+	// This part shoud
 	current_task_success=false;//we reset the success of the task to false
 	current_task_elapsed_time = task_time*1000; //we reset the time taken to solve the puzzle
 	help_timestamp = 0;
 	total_help_time = 0;
 
+	//Experiment-specific stuff
 	//We display the phrase
 	$("#pauseStimulus").hide();
 	$("#stimulus").html(phrases[current_task].htmlText);
@@ -201,17 +105,21 @@ function startTask(){
 	    	onExpiry: endTask 
 	    });// In case the clock was already initialized, we restart it
 
-	current_task_timestamp = (new Date()).getTime();
 
+	// This part should also be in all experiments, probably
+	current_task_timestamp = (new Date()).getTime();
 	on_task = true;
 }
 
+// TODO 6: Define the endTask() function with whatever happens at the end of each task (hide stimuli, stop timers, build task result data)
 function endTask(){
 
-	if(current_task<num_tasks){// Just in case, it looks like this is called two times on ending
+	if(current_task<num_tasks){// Just in case, it looks like this is called twice on ending
+		
+		//This part is experiment-specific
 		//We decide if the task was correct?
 		console.log("ended task - correctly? "+current_task_success + " in " + (current_task_elapsed_time - total_help_time) + " ms. BTW, user colorblind " + user_profile.colorblind);
-		//We send the data to the database, or store it locally
+		//We send store the data locally to be sent at the end of the experiment
 		var result = {
 		  "ordinal": current_task,
 		  "correct": phrases[current_task].correct,
@@ -223,7 +131,10 @@ function endTask(){
 		};
 		results.push(result);
 
+		//This part is largely generic, but has some experiment-specific stuff
 		if(current_task<(phrases.length-1)){
+
+			//Experiment-specific transition between task and pause (exchange stimuli)
 			//We display the big dot
 			$("#pauseStimulus").show();
 			$("#stimulus").hide();
@@ -269,28 +180,12 @@ function endTask(){
 
 }
 
-function resumeCounters(){
 
-	console.log('resuming counters');
-	$('#clocktask').countdown('resume');
-	$('#clockpauses').countdown('resume');
-
-}
-
-function pauseCounters(){
-
-	console.log('pausing counters');
-	$('#clocktask').countdown('pause');
-	$('#clockpauses').countdown('pause');
-
-}
-
-
+// TODO 7: do the finishExperiment() function with whatever happens at the end of the experiment 
+// (it is mostly generic like showing the ending window, but double-check that your experiment does not need anything special here)
 function finishExperiment(){
 
-	console.log("Experiment finished! go back to beginning");
-
-	//Show modal Thankyou window with loading animation
+	//Show modal Thankyou window with disabled buttons while we send the results to server
 	$('#endModal').modal('show');
 	$('#closetrbutton').hide();
 	$('#endBackHome').button('loading');
@@ -314,21 +209,16 @@ function finishExperiment(){
 
 }
 
+// This is the callback function when the results are successfully sent to server, probably no changes needed
 function showFinalGoodbye(){
-	console.log("Response received!");
+	console.log("Results sending successful!");
 	$('#endBackHome').button('reset');
 	$('#closetrbutton').show();
 
 }
 
 
-
-function showHelp(){
-	showModal(intro);
-
-	timeshelp++;
-}
-
+// TODO 8: do the storeProfile() function that reads the user profile form and translates it to the data structure that will be sent to the server along with the results
 function storeProfile(){
 
 	var field = document.getElementById("colorblind");
@@ -346,86 +236,3 @@ function storeProfile(){
 
 }
 
-
-function formatDate(date, format, utc) {
-    var MMMM = ["\x00", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    var MMM = ["\x01", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    var dddd = ["\x02", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-    var ddd = ["\x03", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-
-    function ii(i, len) {
-        var s = i + "";
-        len = len || 2;
-        while (s.length < len) s = "0" + s;
-        return s;
-    }
-
-    var y = utc ? date.getUTCFullYear() : date.getFullYear();
-    format = format.replace(/(^|[^\\])yyyy+/g, "$1" + y);
-    format = format.replace(/(^|[^\\])yy/g, "$1" + y.toString().substr(2, 2));
-    format = format.replace(/(^|[^\\])y/g, "$1" + y);
-
-    var M = (utc ? date.getUTCMonth() : date.getMonth()) + 1;
-    format = format.replace(/(^|[^\\])MMMM+/g, "$1" + MMMM[0]);
-    format = format.replace(/(^|[^\\])MMM/g, "$1" + MMM[0]);
-    format = format.replace(/(^|[^\\])MM/g, "$1" + ii(M));
-    format = format.replace(/(^|[^\\])M/g, "$1" + M);
-
-    var d = utc ? date.getUTCDate() : date.getDate();
-    format = format.replace(/(^|[^\\])dddd+/g, "$1" + dddd[0]);
-    format = format.replace(/(^|[^\\])ddd/g, "$1" + ddd[0]);
-    format = format.replace(/(^|[^\\])dd/g, "$1" + ii(d));
-    format = format.replace(/(^|[^\\])d/g, "$1" + d);
-
-    var H = utc ? date.getUTCHours() : date.getHours();
-    format = format.replace(/(^|[^\\])HH+/g, "$1" + ii(H));
-    format = format.replace(/(^|[^\\])H/g, "$1" + H);
-
-    var h = H > 12 ? H - 12 : H == 0 ? 12 : H;
-    format = format.replace(/(^|[^\\])hh+/g, "$1" + ii(h));
-    format = format.replace(/(^|[^\\])h/g, "$1" + h);
-
-    var m = utc ? date.getUTCMinutes() : date.getMinutes();
-    format = format.replace(/(^|[^\\])mm+/g, "$1" + ii(m));
-    format = format.replace(/(^|[^\\])m/g, "$1" + m);
-
-    var s = utc ? date.getUTCSeconds() : date.getSeconds();
-    format = format.replace(/(^|[^\\])ss+/g, "$1" + ii(s));
-    format = format.replace(/(^|[^\\])s/g, "$1" + s);
-
-    var f = utc ? date.getUTCMilliseconds() : date.getMilliseconds();
-    format = format.replace(/(^|[^\\])fff+/g, "$1" + ii(f, 3));
-    f = Math.round(f / 10);
-    format = format.replace(/(^|[^\\])ff/g, "$1" + ii(f));
-    f = Math.round(f / 10);
-    format = format.replace(/(^|[^\\])f/g, "$1" + f);
-
-    var T = H < 12 ? "AM" : "PM";
-    format = format.replace(/(^|[^\\])TT+/g, "$1" + T);
-    format = format.replace(/(^|[^\\])T/g, "$1" + T.charAt(0));
-
-    var t = T.toLowerCase();
-    format = format.replace(/(^|[^\\])tt+/g, "$1" + t);
-    format = format.replace(/(^|[^\\])t/g, "$1" + t.charAt(0));
-
-    var tz = -date.getTimezoneOffset();
-    var K = utc || !tz ? "Z" : tz > 0 ? "+" : "-";
-    if (!utc) {
-        tz = Math.abs(tz);
-        var tzHrs = Math.floor(tz / 60);
-        var tzMin = tz % 60;
-        K += ii(tzHrs) + ":" + ii(tzMin);
-    }
-    format = format.replace(/(^|[^\\])K/g, "$1" + K);
-
-    var day = (utc ? date.getUTCDay() : date.getDay()) + 1;
-    format = format.replace(new RegExp(dddd[0], "g"), dddd[day]);
-    format = format.replace(new RegExp(ddd[0], "g"), ddd[day]);
-
-    format = format.replace(new RegExp(MMMM[0], "g"), MMMM[M]);
-    format = format.replace(new RegExp(MMM[0], "g"), MMM[M]);
-
-    format = format.replace(/\\(.)/g, "$1");
-
-    return format;
-};

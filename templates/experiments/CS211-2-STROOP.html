@@ -1,115 +1,67 @@
-{% extends "base.html" %}
+{% extends "experiment.html" %}
 
 {% load staticfiles %}
 
-{% block content %}
+{% block css-files %}
+    <!-- Custom styles for this experiment -->
+    <link href="{% static 'css/STROOP.css' %}" rel="stylesheet">
+{% endblock %}
 
+{% block experiment-intro-title %}The STROOP effect{% endblock %}
 
-	<div id="introExperimentModal" class="modal fade">
-	    <div class="modal-dialog">
-	        <div class="modal-content">
-	            <div class="modal-header">
-	                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-	                <h2 class="modal-title">The STROOP effect</h2>
-	            </div>
-	            <div class="modal-body">
-	                <p>This is a small introductory text about the effect, and what the task will be about...</p>
+{% block experiment-end-title %}The STROOP effect{% endblock %}
 
-	            </div>
+{% block experiment-title %}CS211-2: The STROOP effect{% endblock %}
 
-	            <div id="modalProfile" class="modal-body modal-hidden">
-	                <h5 class="modal-title">But first, let us know a bit about you...</h5>
-	                <form id="userProfileForm" class="form-signin" action="javascript:storeProfile();">
-	                	
-	                	<label for="colorblind">Are you colorblind?</label> 
-	                	<select id="colorblind" name="session">
-							<option value="false" selected="selected">No</option>
-							<option value="true">Yes</option>
-						</select>
-       				    <input type="submit" class="btn btn-lg btn-primary" value="Save information" />
+{% block experiment-intro-text %}<p>This is a small introductory text about the effect, and what the task will be about...</p>{% endblock %}
 
-	                </form>
-	            </div>
-	            <div class="modal-footer">
-	                <button type="button" class="btn btn-default" data-dismiss="modal">Start/Continue experiment</button>
-	            </div>
-	        </div>
-	    </div>
-	</div>
+{% block experiment-profile-form %}
+	<label for="colorblind">Are you colorblind?</label> 
+	<select id="colorblind" name="session">
+		<option value="false" selected="selected">No</option>
+		<option value="true">Yes</option>
+	</select>
+	<input type="submit" class="btn btn-lg btn-primary" value="Save information" />
+{% endblock %}
 
-	<div id="endModal" class="modal fade">
-	    <div class="modal-dialog">
-	        <div class="modal-content">
-	            <div class="modal-header">
-	                <button id="closetrbutton" type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-	                <h2 class="modal-title">The STROOP effect</h2>
-	            </div>
-	            <div class="modal-body">
-	                <p>Thanks a lot for your participation!</p>
-
-	            </div>
-
-	            <div class="modal-footer">
-	                <button type="button" class="btn btn-default" id="endBackHome" data-loading-text="Sending your results to our servers..." data-dismiss="modal">Back to home</button>
-	            </div>
-	        </div>
-	    </div>
-	</div>
-
-
-		<div class="panel panel-default">
-            <div class="panel-heading">
-              <h2 class="panel-title text-center">LAB 211-2: STROOP Effect Task</h2>
-            </div>
-            <div class="panel-body">
-            	<div id="mainDisplay">
-
-
-            	  <div class="site-wrapper">
-
-      				<div class="site-wrapper-inner">
-
-				        <div class="cover-container">
-						  <div class="cover">
-						  	<img id="pauseStimulus" src="{% static 'img/dot.png' %}" />
-				            <h1 id="stimulus" class="cover-heading"></h1>
-				          </div>
-				          <p id="countdownMessage" class="text-right"><span id="initialMessage">The task is about to start. You will have <strong>3s.</strong> to respond.</span> <span id="clockpauses"></span> <span id="clocktask"></span><p>
-				        </div>
-				    </div>
-				  </div>
-            	</div>
-
-            	<div class="well">
-		      		<p id="keyInstructions" class="text-center animated-bg">Is the sentence's meaning true? Type <strong>Y</strong> if yes, or <strong>N</strong> if not.</p>
-		      		
-		      		<p class="text-right"><a class="btn btn-default" href="javascript:showHelp();" role="button">Help &raquo;</a></p>
-					<div class="progress">
-			        	<div id="taskProgress" class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">0% done</div>
-			      	</div>
-		      	</div>
-            </div>
-          </div>
-
-
-
-
+{% block experiment-end-text %}
+	<p>Thanks a lot for your participation!</p>
 {% endblock %}
 
 
-{% block scripts %}
-	
+{% block experiment-content %}
+	<div id="mainDisplay">
+
+
+	  <div class="site-wrapper">
+
+			<div class="site-wrapper-inner">
+
+	        <div class="cover-container">
+			  <div class="cover">
+
+			  	<img id="pauseStimulus" src="{% static 'img/dot.png' %}" />
+	            <h1 id="stimulus" class="cover-heading"></h1>
+	          </div>
+	          <p id="countdownMessage" class="text-right"><span id="initialMessage">The task is about to start. You will have <strong>3s.</strong> to respond.</span> <span id="clockpauses"></span> <span id="clocktask"></span><p>
+	        </div>
+	    </div>
+	  </div>
+	</div>
+
+	<div class="well">
+  		<p id="keyInstructions" class="text-center animated-bg">Is the sentence's meaning true? Type <strong>Y</strong> if yes, or <strong>N</strong> if not.</p>
+  		
+  		<p class="text-right"><a class="btn btn-default" href="javascript:showHelp();" role="button">Help &raquo;</a></p>
+		<div class="progress">
+        	<div id="taskProgress" class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">0% done</div>
+      	</div>
+  	</div>
+{% endblock %}
+
+
+
+
+{% block experiment-script %}
     <script src="{% static 'js/experiment-STROOP.js' %}"></script>
-    <script src="{% static 'jquery/js/jquery.plugin.min.js' %}"></script>
-    <script src="{% static 'jquery/js/jquery.countdown.js' %}"></script>
-
-    <script type="text/javascript">
-	//We do the initial setup of the task
-	$(document).ready(function(){
-			init();
-		});
-
-	var user_id = {{ user_id }};
-    </script>
-
 {% endblock %}

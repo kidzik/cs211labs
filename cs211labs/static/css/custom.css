@@ -149,32 +149,8 @@ body {
   padding: 20px;
 }
 
+/* Experiment styles */
 
-/*STROOP effect styles*/
-.red {
-  color: red;
-}
-
-.blue {
-  color: blue;
-}
-
-.green {
-  color: green;
-}
-
-.brown {
-  color: maroon;
-}
-
-.yellow {
-  color: yellow;
-  background-color: gray;
-}
-
-#pauseStimulus {
-  padding: 85px;
-}
 
 .animated-bg{
   padding: 10px;
