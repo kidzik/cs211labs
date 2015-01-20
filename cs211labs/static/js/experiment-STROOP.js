@@ -1,7 +1,10 @@
 
 // TODO 1: Define the user profile useful for this task (to be shown as a form in the intro)
 //User profile for the STROOP task
-user_profile = {colorblind: false};
+user_profile = {
+	colorblind: false,
+	device_id: "LM"
+};
 
 // TODO 2: Define any experiment-specific data structures
 //Data for the STROOP task
@@ -41,25 +44,17 @@ function init_specific(){
 	//We do the initial shuffle of the phrases
 	shuffle(phrases);
 
-	//We add the function to capture keypresses
+	//We add the behavior to capture keypresses
 	$(document).keypress(function(e){
 		if(on_task && !on_modal && current_task<num_tasks){
 	    	if(e.which == 89 || e.which == 121){// pressed y
-	    		if(phrases[current_task].correct) current_task_success=true;
-	    		else current_task_success=false;
 
-	    		var time = (new Date()).getTime();
-	    		current_task_elapsed_time = time - current_task_timestamp;
+	    		yes();
 
-	    		endTask();
 	    	}else if(e.which == 78 || e.which == 110){// pressed n
-	    		if(!phrases[current_task].correct) current_task_success=true;
-	    		else current_task_success=false;
 
-	    		var time = (new Date()).getTime();
-	    		current_task_elapsed_time = time - current_task_timestamp;
-
-	    		endTask();
+	    		no();
+	    		
 	    	}else{//pressed anything else, we give brief visual feedback
 	    		var oldcolor=$('#keyInstructions').css( "background-color" );
 	    		$('#keyInstructions').css( "background-color" , "red");
@@ -70,7 +65,46 @@ function init_specific(){
 		}
 	});
 
+	//We add the function to capture yes/no button presses
+	$('#yesBtn').on('click', function () {
+    	if(on_task && !on_modal && current_task<num_tasks){
+    		yes();
+    	}
+  	})
+	$('#noBtn').on('click', function () {
+    	if(on_task && !on_modal && current_task<num_tasks){
+    		no();
+    	}
+  	})
+
+	//Just in case, we hide the stimulus and buttons
+	$("#stimulus").hide();
+	$("#stimulus-buttons").hide();
+
 }
+
+// this is what happens when user answers yes
+function yes(){
+				if(phrases[current_task].correct) current_task_success=true;
+	    		else current_task_success=false;
+
+	    		var time = (new Date()).getTime();
+	    		current_task_elapsed_time = time - current_task_timestamp;
+
+	    		endTask();
+}
+
+// this is what happens when user answers yes
+function no(){
+				if(!phrases[current_task].correct) current_task_success=true;
+	    		else current_task_success=false;
+
+	    		var time = (new Date()).getTime();
+	    		current_task_elapsed_time = time - current_task_timestamp;
+
+	    		endTask();
+}
+
 
 
 // TODO 5: Define the startTask() function with whatever happens at the beginning of each task (show stimuli, countdown timers, initialize task timestamps)
@@ -86,6 +120,7 @@ function startTask(){
 	$("#pauseStimulus").hide();
 	$("#stimulus").html(phrases[current_task].htmlText);
 	$("#stimulus").show();
+	$("#stimulus-buttons").show();
 
 	//We start and display the task countdown
 	$('#initialMessage').hide();
@@ -138,6 +173,7 @@ function endTask(){
 			//We display the big dot
 			$("#pauseStimulus").show();
 			$("#stimulus").hide();
+			$("#stimulus-buttons").hide();
 
 			//We start and display the pause countdown
 			$('#initialMessage').hide();
@@ -221,10 +257,16 @@ function showFinalGoodbye(){
 // TODO 8: do the storeProfile() function that reads the user profile form and translates it to the data structure that will be sent to the server along with the results
 function storeProfile(){
 
+	//We extract the answers and put them into the user profile
 	var field = document.getElementById("colorblind");
 	var colorblind = field.options[field.selectedIndex].value;
 	if(colorblind=="true") user_profile.colorblind = true;
 	else user_profile.colorblind = false;
+	
+	field = document.getElementById("id_device");
+	var device = field.options[field.selectedIndex].value;
+	user_profile.device = device;
+
 	// We hide the form
 	$("#userProfileForm").css( "display", "none" );
 	// We display a message

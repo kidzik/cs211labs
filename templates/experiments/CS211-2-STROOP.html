@@ -13,14 +13,24 @@
 
 {% block experiment-title %}CS211-2: The STROOP effect{% endblock %}
 
-{% block experiment-intro-text %}<p>This is a small introductory text about the effect, and what the task will be about...</p>{% endblock %}
+{% block experiment-intro-text %}<p>This lab intends to measure some phenomena in human cognition. A sentence will appear on the screen. Type Y (or use the 'Yes' button) if the sentence's <strong>meaning</strong> is correct, or N (or the 'No' button) if it is not. The sentences are make use of basic colors.</p>{% endblock %}
 
 {% block experiment-profile-form %}
+	<br/>
 	<label for="colorblind">Are you colorblind?</label> 
 	<select id="colorblind" name="session">
 		<option value="false" selected="selected">No</option>
 		<option value="true">Yes</option>
 	</select>
+	<br/>
+	<label for="id_device">What kind of device are you using?</label>
+	<select id="id_device" name="device">
+		<option value="LT">Laptop with a touchpad</option>
+		<option value="LM" selected>Computer with a mouse</option>
+		<option value="T">Tablet</option>
+		<option value="P">Phone</option>
+	</select>
+	<br/>
 	<input type="submit" class="btn btn-lg btn-primary" value="Save information" />
 {% endblock %}
 
@@ -42,6 +52,10 @@
 
 			  	<img id="pauseStimulus" src="{% static 'img/dot.png' %}" />
 	            <h1 id="stimulus" class="cover-heading"></h1>
+	            <div id="stimulus-buttons">
+	            	<button type="button" id="yesBtn" class="btn btn-success btn-lg"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Yes</button>
+	            	<button type="button" id="noBtn" class="btn btn-danger btn-lg"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span> No</button>
+	            </div>
 	          </div>
 	          <p id="countdownMessage" class="text-right"><span id="initialMessage">The task is about to start. You will have <strong>3s.</strong> to respond.</span> <span id="clockpauses"></span> <span id="clocktask"></span><p>
 	        </div>
@@ -50,7 +64,7 @@
 	</div>
 
 	<div class="well">
-  		<p id="keyInstructions" class="text-center animated-bg">Is the sentence's meaning true? Type <strong>Y</strong> if yes, or <strong>N</strong> if not.</p>
+  		<p id="keyInstructions" class="text-center animated-bg">Is the sentence's meaning true? Type <strong>Y</strong> if yes, or <strong>N</strong> if not, or use the buttons below the sentence.</p>
   		
   		<p class="text-right"><a class="btn btn-default" href="javascript:showHelp();" role="button">Help &raquo;</a></p>
 		<div class="progress">
