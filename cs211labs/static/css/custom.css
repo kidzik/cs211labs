@@ -180,3 +180,15 @@ body {
   padding: 10px;
   transition: all 0.2s ease 0s;
 }
+
+#clockpauses {
+  color: #666;
+}
+
+#clocktask {
+  color: #A66;
+}
+
+.huge {
+  font-size: 3em;
+}

@@ -6,7 +6,7 @@ var timeshelp = 0; //times the user asked for help
 var timetask = 0; // time employed in doing the current task
 var timehelp = 0; // time employed in help mode
 var task_time = 3; // time to do each task, in seconds
-var pause_time = 1; // pause between each task, in seconds
+var pause_time = 3; // pause between each task, in seconds
 var current_task = 0; //index of the current task
 var on_task = false; //denotes whether we are on a task - to capture the keypresses
 var on_modal = false; //denotes whether we are on the modal window - to not capture keypresses
@@ -166,7 +166,7 @@ function initCounters(){
 	$('#clockpauses').show();
 	$('#clockpauses').countdown({
 			until: '+'+pause_time+'s', 
-	    	layout: 'Prepare yourself. The next task will start in {sn} {sl}...',
+	    	layout: 'Task will start in {sn}s...',
 	    	onExpiry: startTask
     	});
 
@@ -192,12 +192,12 @@ function startTask(){
 		});
 	$('#clocktask').countdown({
 			until: '+'+task_time+'s', 
-	    	layout: '<large>{sn} {sl}</large>',
+	    	layout: '<span class="huge">{sn}</span>s',
 	    	onExpiry: endTask 
 	    }); //We initialize the clock
 	$('#clocktask').countdown('option',{
 			until: '+'+task_time+'s', 
-	    	layout: '<large>{sn} {sl}</large>',
+	    	layout: '<span class="huge">{sn}</span>s',
 	    	onExpiry: endTask 
 	    });// In case the clock was already initialized, we restart it
 
@@ -237,7 +237,7 @@ function endTask(){
 			});
 			$('#clockpauses').countdown('option',{
 					until: '+'+pause_time+'s', 
-			    	layout: 'Prepare yourself. The next task will start in {sn} {sl}...',
+			    	layout: 'Task will start in {sn}s...',
 			    	onExpiry: startTask
 		    	});
 
