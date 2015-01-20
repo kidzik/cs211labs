@@ -1,41 +1,25 @@
 // TODO 0: General parameters of this experiment (time for each task and pauses in between)
-task_time = 3; // time to do each task, in seconds
-pause_time = 3; // pause between each task, in seconds
+task_time = 30; // time to do each task, in seconds
+pause_time = 5; // pause between each task, in seconds
+
 
 // TODO 1: Define the user profile useful for this task (to be shown as a form in the intro)
 //User profile for the STROOP task
 user_profile = {
-	colorblind: false,
 	device_id: "LM"
 };
 
 // TODO 2: Define any experiment-specific data structures
-//Data for the STROOP task
-//These are the STROOP phrases
+//Data for the GENEALOGY task
+//These are the sets of logical elements
 var phrases = [
-{htmlText: "The color of lemons is <span class='yellow'>yellow</span>", correct: true, consistent: true, color_text: "yellow", color_visual: "yellow"},
-{htmlText: "The color of blood is <span class='red'>red</span>", correct: true, consistent: true, color_text: "red", color_visual: "red"},
-{htmlText: "The color of grass is <span class='green'>green</span>", correct: true, consistent: true, color_text: "green", color_visual: "green"},
-{htmlText: "The color of the sky is <span class='blue'>blue</span>", correct: true, consistent: true, color_text: "blue", color_visual: "blue"},
-{htmlText: "The color of wood is <span class='brown'>brown</span>", correct: true, consistent: true, color_text: "brown", color_visual: "brown"},
-
-{htmlText: "The color of lemons is <span class='red'>yellow</span>", correct: true, consistent: false, color_text: "yellow", color_visual: "red"},
-{htmlText: "The color of blood is <span class='yellow'>red</span>", correct: true, consistent: false, color_text: "red", color_visual: "yellow"},
-{htmlText: "The color of grass is <span class='blue'>green</span>", correct: true, consistent: false, color_text: "green", color_visual: "blue"},
-{htmlText: "The color of the sky is <span class='brown'>blue</span>", correct: true, consistent: false, color_text: "blue", color_visual: "brown"},
-{htmlText: "The color of wood is <span class='green'>brown</span>", correct: true, consistent: false, color_text: "brown", color_visual: "green"},
-
-{htmlText: "The color of lemons is <span class='brown'>brown</span>", correct: false, consistent: true, color_text: "brown", color_visual: "brown"},
-{htmlText: "The color of blood is <span class='yellow'>yellow</span>", correct: false, consistent: true, color_text: "yellow", color_visual: "yellow"},
-{htmlText: "The color of grass is <span class='red'>red</span>", correct: false, consistent: true, color_text: "red", color_visual: "red"},
-{htmlText: "The color of the sky is <span class='green'>green</span>", correct: false, consistent: true, color_text: "green", color_visual: "green"},
-{htmlText: "The color of wood is <span class='blue'>blue</span>", correct: false, consistent: true, color_text: "blue", color_visual: "blue"},
-
-{htmlText: "The color of lemons is <span class='brown'>blue</span>", correct: false, consistent: false, color_text: "blue", color_visual: "brown"},
-{htmlText: "The color of blood is <span class='blue'>green</span>", correct: false, consistent: false, color_text: "green", color_visual: "blue"},
-{htmlText: "The color of grass is <span class='green'>brown</span>", correct: false, consistent: false, color_text: "brown", color_visual: "green"},
-{htmlText: "The color of the sky is <span class='yellow'>red</span>", correct: false, consistent: false, color_text: "red", color_visual: "yellow"},
-{htmlText: "The color of wood is <span class='red'>yellow</span>", correct: false, consistent: false, color_text: "yellow", color_visual: "red"}
+{
+	statements: "Bill is the brother of Mitch<br/>Mike is the father of Mitch<br/>Nathalie is the daughter of Bill", 
+	question: "Who is the grand-father of Nathalie?", 
+	num_elements: 3, 
+	options: ["Bill","Mitch","Mike"], 
+	solution: "Mike"
+}
 ];
 
 // TODO 3: Define the number of tasks that will make up the workflow of the experiment for one subject
@@ -47,67 +31,11 @@ function init_specific(){
 	//We do the initial shuffle of the phrases
 	shuffle(phrases);
 
-	//We add the behavior to capture keypresses
-	$(document).keypress(function(e){
-		if(on_task && !on_modal && current_task<num_tasks){
-	    	if(e.which == 89 || e.which == 121){// pressed y
-
-	    		yes();
-
-	    	}else if(e.which == 78 || e.which == 110){// pressed n
-
-	    		no();
-	    		
-	    	}else{//pressed anything else, we give brief visual feedback
-	    		var oldcolor=$('#keyInstructions').css( "background-color" );
-	    		$('#keyInstructions').css( "background-color" , "red");
-				setTimeout(function(){
-	    			$('#keyInstructions').css( "background-color" , oldcolor);
-	    		}, 300);
-	    	}
-		}
-	});
-
-	//We add the function to capture yes/no button presses
-	$('#yesBtn').on('click', function () {
-    	if(on_task && !on_modal && current_task<num_tasks){
-    		yes();
-    	}
-  	})
-	$('#noBtn').on('click', function () {
-    	if(on_task && !on_modal && current_task<num_tasks){
-    		no();
-    	}
-  	})
-
 	//Just in case, we hide the stimulus and buttons
 	$("#stimulus").hide();
 	$("#stimulus-buttons").hide();
 
 }
-
-// this is what happens when user answers yes
-function yes(){
-				if(phrases[current_task].correct) current_task_success=true;
-	    		else current_task_success=false;
-
-	    		var time = (new Date()).getTime();
-	    		current_task_elapsed_time = time - current_task_timestamp;
-
-	    		endTask();
-}
-
-// this is what happens when user answers yes
-function no(){
-				if(!phrases[current_task].correct) current_task_success=true;
-	    		else current_task_success=false;
-
-	    		var time = (new Date()).getTime();
-	    		current_task_elapsed_time = time - current_task_timestamp;
-
-	    		endTask();
-}
-
 
 
 // TODO 5: Define the startTask() function with whatever happens at the beginning of each task (show stimuli, countdown timers, initialize task timestamps)
@@ -119,10 +47,32 @@ function startTask(){
 	total_help_time = 0;
 
 	//Experiment-specific stuff
-	//We display the phrase
+	//We display the phrases and the question
 	$("#pauseStimulus").hide();
-	$("#stimulus").html(phrases[current_task].htmlText);
+	$("#stimulus").html( phrases[current_task].statements + "<br/><strong>" + phrases[current_task].question + "</strong>" );
 	$("#stimulus").show();
+
+	//We generate the response buttons and their behavior
+	var buttons="";
+	for (i = 0; i<phrases[current_task].options.length; i++){
+		if(phrases[current_task].options[i]==phrases[current_task].solution){//button for the correct solution
+			buttons += 	'&nbsp;<button type="button" class="btn btn-default btn-lg correct-btn">'+phrases[current_task].options[i]+'</button>';
+		} else {//button for an incorrect solution
+			buttons += 	'&nbsp;<button type="button" class="btn btn-default btn-lg incorrect-btn">'+phrases[current_task].options[i]+'</button>';
+		}
+	}
+	buttons += 	'&nbsp;<button type="button" class="btn btn-default btn-lg incorrect-btn">I don\'t know!</button>';
+	$("#stimulus-buttons").html(buttons);
+	$('.correct-btn').on('click', function () {
+    	if(on_task && !on_modal && current_task<num_tasks){
+    		correct();
+    	}
+  	})
+	$('.incorrect-btn').on('click', function () {
+    	if(on_task && !on_modal && current_task<num_tasks){
+    		incorrect();
+    	}
+  	})
 	$("#stimulus-buttons").show();
 
 	//We start and display the task countdown
@@ -149,6 +99,24 @@ function startTask(){
 	on_task = true;
 }
 
+function correct(){
+				current_task_success=true;
+
+	    		var time = (new Date()).getTime();
+	    		current_task_elapsed_time = time - current_task_timestamp;
+
+	    		endTask();
+}
+
+function incorrect(){
+				current_task_success=false;
+
+	    		var time = (new Date()).getTime();
+	    		current_task_elapsed_time = time - current_task_timestamp;
+
+	    		endTask();
+}
+
 // TODO 6: Define the endTask() function with whatever happens at the end of each task (hide stimuli, stop timers, build task result data)
 function endTask(){
 
@@ -156,14 +124,11 @@ function endTask(){
 		
 		//This part is experiment-specific
 		//We decide if the task was correct?
-		console.log("ended task - correctly? "+current_task_success + " in " + (current_task_elapsed_time - total_help_time) + " ms. BTW, user colorblind " + user_profile.colorblind);
+		console.log("ended task - correctly? "+current_task_success + " in " + (current_task_elapsed_time - total_help_time) + " ms.");
 		//We send store the data locally to be sent at the end of the experiment
 		var result = {
 		  "ordinal": current_task,
-		  "correct": phrases[current_task].correct,
-		  "consistent": phrases[current_task].consistent,
-		  "color_vis": phrases[current_task].color_visual,
-		  "color_tex": phrases[current_task].color_text,
+		  "num_elements": phrases[current_task].num_elements,
 		  "outcome_corr": current_task_success,
 		  "time": (current_task_elapsed_time - total_help_time)
 		};
@@ -261,14 +226,9 @@ function showFinalGoodbye(){
 function storeProfile(){
 
 	//We extract the answers and put them into the user profile
-	var field = document.getElementById("colorblind");
-	var colorblind = field.options[field.selectedIndex].value;
-	if(colorblind=="true") user_profile.colorblind = true;
-	else user_profile.colorblind = false;
-	
-	field = document.getElementById("id_device");
+	var field = document.getElementById("id_device");
 	var device = field.options[field.selectedIndex].value;
-	user_profile.device = device;
+	user_profile.device_id = device;
 
 	// We hide the form
 	$("#userProfileForm").css( "display", "none" );

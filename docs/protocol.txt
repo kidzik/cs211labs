@@ -4,6 +4,7 @@
 Format of json input: list of
 {'user_id': 1,
 'user_profile': {
+  "device_id": "LT"|"LM"|"T"|"P",
   "colorblind": true
 },
 'data': [{
@@ -27,12 +28,17 @@ Example: "2/correct/inconsistent/red/yellow/errors" -> 1
 
 3. Genealogy experiment
 Format of json input: list of
-{
-  "ordinal": 2,
-  "resp": true,
+{'user_id': 1,
+'user_profile': {
+  "device_id": "LT"|"LM"|"T"|"P",
+},
+'data': [{
+  "ordinal": 2, //zero-based
+  "num_elements": 3,
   "outcome_corr": true,
   "time": 240
-}
+}, ...
+]}
 
 Format:
  - experiment in a row 0-7
