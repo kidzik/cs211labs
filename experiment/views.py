@@ -27,6 +27,7 @@ class SessionView(FormView):
     """
     template_name = "teacher_index.html"
     form_class = SessionForm
+    success_url = '/'
 
     def get_context_data(self, **kwargs):
         context = super(SessionView, self).get_context_data(**kwargs)
