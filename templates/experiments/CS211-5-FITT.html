@@ -1,0 +1,61 @@
+{% extends "experiment.html" %}
+
+{% load staticfiles %}
+
+{% block css-files %}
+    <!-- Custom styles for this experiment -->
+    <link href="{% static 'css/FITT.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block experiment-intro-title %}The FITT's law{% endblock %}
+
+{% block experiment-end-title %}The FITT's law{% endblock %}
+
+{% block experiment-title %}CS211-5: The FITT's law{% endblock %}
+
+{% block experiment-intro-text %}<p>Description here</p>{% endblock %}
+
+{% block experiment-profile-form %}
+	<br/>
+	<label for="id_device">What kind of device are you using?</label>
+	<select id="id_device" name="device">
+		<option value="LT">Laptop with a touchpad</option>
+		<option value="LM" selected>Computer with a mouse</option>
+		<option value="T">Tablet</option>
+		<option value="P">Phone</option>
+	</select>
+	<br/>
+	<input type="submit" class="btn btn-lg btn-primary" value="Save information" />
+{% endblock %}
+
+{% block experiment-end-text %}
+	<p>Thanks a lot for your participation!</p>
+{% endblock %}
+
+
+{% block experiment-content %}
+	<div id="mainDisplay">
+	 <div id="bound_margin">
+          <div id="ball_bounds">
+	   <img id="dot" src="{% static 'img/dot.png' %}" />
+	  </div>
+	 </div>
+<p id="countdownMessage" class="text-right"><span id="initialMessage">The task is about to start. You will have <strong>30s.</strong> to respond.</span> <span id="clockpauses"></span> <span id="clocktask"></span><p>
+	</div>
+
+	<div class="well">
+  		<p id="keyInstructions" class="text-center animated-bg">Please click the ball.</p>
+  		
+  		<p class="text-right"><a class="btn btn-default" href="javascript:showHelp();" role="button">Help &raquo;</a></p>
+		<div class="progress">
+        	<div id="taskProgress" class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">0% done</div>
+      	</div>
+  	</div>
+{% endblock %}
+
+
+
+
+{% block experiment-script %}
+    <script src="{% static 'js/experiment-FITT.js' %}"></script>
+{% endblock %}
