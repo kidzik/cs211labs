@@ -2,13 +2,14 @@ from . import ExperimentProcessor
 
 class ExperimentGenealogyProcessor(ExperimentProcessor):
     def map_results(self, data, profile):
-        # Format: list of
-        # {
-        #  "ordinal": 2,
-        #  "resp": true,
-        #  "outcome_corr": true,
-        #  "time": 240
-        # }
+        """
+        {
+            "ordinal": integer,
+            "num_elements": integer,
+            "outcome_corr": boolean,
+            "time": integer (in ms)
+        }
+        """
 
         data = super(ExperimentGenealogyProcessor, self).parse_json(data)
         profile = super(ExperimentGenealogyProcessor, self).parse_json(profile)
@@ -19,11 +20,11 @@ class ExperimentGenealogyProcessor(ExperimentProcessor):
             s = ""
             s = s + el['ordinal'].__str__() + "/"
 
-            results[s + "noresp"] = 1 if el['resp'] else 0
+#            results[s + "noresp"] = 1 if el['resp'] else 0
             results[s + "errors"] = 0 if el['outcome_corr'] else 1
             results[s + "time"] = el['time'].__str__()
 
-        return results
+        return results, profile
 
     def process_results(self, results):
         # Format:

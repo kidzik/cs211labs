@@ -68,7 +68,7 @@ class SubmitResultView(View):
         data = request.POST['data']
         user_profile = request.POST['user_profile']
 
-        parsed = ep.map_results(data, user_profile)
+        parsed, profile = ep.map_results(data, user_profile)
 
         for key, val in parsed.iteritems():
             r = Result()
@@ -78,6 +78,7 @@ class SubmitResultView(View):
             r.save()
 
         u.completed = True
+        u.profile = user_profile
         u.save()
 
         return HttpResponse('result')
