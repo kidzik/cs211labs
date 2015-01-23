@@ -46,5 +46,21 @@ Format:
 Example: "2/noresp" -> 0
 
 4. Dual experiment
+Format of json input: list of
+{'user_id': 1,
+'user_profile': {
+  "device_id": "LT"|"LM"|"T"|"P",
+  "condition": "A"|"B", //A=stable symmetry, increasing ball; b=increasing symmetry, stable ball
+  "baseline_ball": 33, //Number of completed ball tasks in the last 30s of the single-task period
+  "baseline2": 22 //Number of completed symmetry tasks in the last 30s of the single-task period
+},
+'data': [{
+  "ordinal": 2, //zero-based, counting only the dual-task period
+  "outcome_ball_corr": true,
+  "outcome_sym_corr": true,
+  "time_ball": 240,
+  "time_sym": 360
+}, ...
+]}
 
 5. Fitts effect experiment

@@ -1,1 +1,72 @@
-Experiment 4
+{% extends "experiment.html" %}
+
+{% load staticfiles %}
+
+{% block css-files %}
+    <!-- Custom styles for this experiment -->
+    <link href="{% static 'css/DUAL.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block experiment-intro-title %}The Dual Task{% endblock %}
+
+{% block experiment-end-title %}The Dual Task{% endblock %}
+
+{% block experiment-title %}CS211-4: The Dual Task{% endblock %}
+
+{% block experiment-intro-text %}<p>This lab intends to measure some phenomena in human cognition, by asking you to do first one, and then two tasks simultaneously.</p><p>First, in the middle screen, you have to destroy the falling balls before they touch the ground, using a laser, as fast as you can (basically use the cursors or the buttons to move left and right the cannon).</p><p>Then, on the side screens, you will have to say whether a series of geometrical shapes are symmetrical (answer using the Y and N keys, or the Yes/No buttons)</p><p>Finally, you will have to perform both tasks simultaneously.</p>{% endblock %}
+
+{% block experiment-profile-form %}
+	<br/>
+	<label for="id_device">What kind of device are you using?</label>
+	<select id="id_device" name="device">
+		<option value="LT">Laptop with a touchpad</option>
+		<option value="LM" selected>Computer with a mouse</option>
+		<option value="T">Tablet</option>
+		<option value="P">Phone</option>
+	</select>
+	<br/>
+	<input type="submit" class="btn btn-lg btn-primary" value="Save information" />
+{% endblock %}
+
+{% block experiment-end-text %}
+	<p>Thanks a lot for your participation!</p>
+{% endblock %}
+
+
+{% block experiment-content %}
+	<div id="mainDisplay">
+
+
+	  <div class="site-wrapper">
+
+			<div class="site-wrapper-inner">
+
+	        <div class="cover-container">
+			  <div class="cover">
+
+			  	<img id="pauseStimulus" src="{% static 'img/dot.png' %}" />
+	            <h1 id="stimulus" class="cover-heading"></h1>
+	            <div id="stimulus-buttons"></div>
+	          </div>
+	          <p id="countdownMessage" class="text-right"><span id="initialMessage">The task is about to start. You will have <strong>2 minutes</strong> to solve as many tasks as you can.</span> <span id="clockpauses"></span> <span id="clocktask"></span><p>
+	        </div>
+	    </div>
+	  </div>
+	</div>
+
+	<div class="well">
+  		<p id="keyInstructions" class="text-center animated-bg">Please use the Y/N and cursor keys to answer the symmetry question and destroy the ball, or use the buttons.</p>
+  		
+  		<p class="text-right"><a class="btn btn-default" href="javascript:showHelp();" role="button">Help &raquo;</a></p>
+		<div class="progress">
+        	<div id="taskProgress" class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">0% done</div>
+      	</div>
+  	</div>
+{% endblock %}
+
+
+
+
+{% block experiment-script %}
+    <script src="{% static 'js/experiment-DUAL.js' %}"></script>
+{% endblock %}
