@@ -1,41 +1,68 @@
 // TODO 0: General parameters of this experiment (time for each task and pauses in between)
-task_time = 30; // time to do each task, in seconds
-pause_time = 5; // pause between each task, in seconds
-
+task_time_sym = 120; // time to do each task, in seconds
+task_time_ball = 120;
+task_time_dual = 120;
+pause_time_single = 5; // pause between each task, in seconds
+pause_time_dual = 0;
 
 // TODO 1: Define the user profile useful for this task (to be shown as a form in the intro)
-//User profile for the STROOP task
+//User profile for the DUAL task
 user_profile = {
-	device_id: "LM"
+	device_id: "LM",
+	condition: "A", //A=stable symmetry, increasing ball; B=increasing symmetry, stable ball
+	baseline_ball: 0, //Number of completed ball tasks in the last 30s of the single-task period
+	baseline_sym: 0 //Number of completed symmetry tasks in the last 30s of the single-task period
 };
 
 // TODO 2: Define any experiment-specific data structures
-//Data for the GENEALOGY task
-//These are the sets of logical elements
-var phrases = [
+//Data for the DUAL task
+//These are the sets of shapes
+var tasks_ball = [
 {
-	statements: "Bill is the brother of Mitch<br/>Mike is the father of Mitch<br/>Nathalie is the daughter of Bill", 
-	question: "Who is the grand-father of Nathalie?", 
-	num_elements: 3, 
-	options: ["Bill","Mitch","Mike"], 
-	solution: "Mike"
+	image1: "1a.png", 
+	image2: "1b.png", 
+	symmetrical: true 
 }
 ];
 
+var ball_speed = 1; //speed at which the ball falls
+
+var increase_difficulty_ball = function(){ //Each time we call this, the difficulty increases (for now, just speed increase by 1)
+	ball_speed++;
+}
+
 // TODO 3: Define the number of tasks that will make up the workflow of the experiment for one subject
-num_tasks = phrases.length;
+num_tasks = tasks_ball.length;
 
 // TODO 4: Define the init-specific() function with 
+var game; //Do the game following this example http://examples.phaser.io/_site/view_full.html?d=games&f=invaders.js&t=invaders
+
 function init_specific(){
 
-	//We do the initial shuffle of the phrases
-	shuffle(phrases);
+        game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create });
 
 	//Just in case, we hide the stimulus and buttons
 	$("#stimulus").hide();
 	$("#stimulus-buttons").hide();
 
 }
+
+
+function preload () {
+
+    game.load.image('logo', 'phaser.png');
+
+}
+
+function create () {
+
+    var logo = game.add.sprite(game.world.centerX, game.world.centerY, 'logo');
+    logo.anchor.setTo(0.5, 0.5);
+
+}
+
+
+
 
 
 // TODO 5: Define the startTask() function with whatever happens at the beginning of each task (show stimuli, countdown timers, initialize task timestamps)
