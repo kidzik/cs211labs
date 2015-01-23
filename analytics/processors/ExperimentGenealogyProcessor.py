@@ -10,8 +10,8 @@ class ExperimentGenealogyProcessor(ExperimentProcessor):
         #  "time": 240
         # }
 
-        data = super(ExperimentSTROOPProcessor, self).parse_json(data)
-        profile = super(ExperimentSTROOPProcessor, self).parse_json(profile)
+        data = super(ExperimentGenealogyProcessor, self).parse_json(data)
+        profile = super(ExperimentGenealogyProcessor, self).parse_json(profile)
 
         results = {}
 
@@ -31,7 +31,7 @@ class ExperimentGenealogyProcessor(ExperimentProcessor):
         #  - noresp / errors / time
         # Example: "2/noresp"
  
-        super(ExperimentSTROOPProcessor, self).process_results(results)
+        super(ExperimentGenealogyProcessor, self).process_results(results)
         processed = {}
 
         processed["errors"] = {'data': self.get_data(results, "errors", 1, 0, range(8)), 'title': 'Errors in time', 'var': 'Errors in time'}

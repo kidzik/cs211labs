@@ -9,7 +9,7 @@ EXPERIMENT_CLASSES = {
     "CS211-2-STROOP": ExperimentSTROOPProcessor,
     "CS211-3-GENEALOGY": ExperimentGenealogyProcessor,
     "CS211-4-DUAL": ExperimentDualProcessor,
-    "CS211-5-FITTS": ExperimentFittsProcessor
+    "CS211-5-FITT": ExperimentFittsProcessor
 }
 
 # Create your views here.
