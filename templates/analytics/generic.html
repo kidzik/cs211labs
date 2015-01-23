@@ -37,7 +37,35 @@
       // Set a callback to run when the Google Visualization API is loaded.
       google.setOnLoadCallback(onLoad);
 
-      function drawChart(data, title, variable) {
+      function drawPlot(data, title, type, variable){
+        if (type == "barplot")
+          drawBarPlot(data, title, variable);
+        if (type == "scatter")
+          drawScatterPlot(data, title);
+      }
+      
+      function drawScatterPlot(data, title) {
+        var dataTable = google.visualization.arrayToDataTable(data);
+
+        var options = {
+          'title': title,
+          'width':600,
+          'height':500,
+          'legend': 'none'
+        };
+
+        // Instantiate and draw our chart, passing in some options.
+        var charts = document.getElementById('charts');
+        var newChart = document.createElement('div');
+        var content = document.createTextNode('test');
+        newChart.appendChild(content);
+        charts.appendChild(newChart);
+
+        var chart = new google.visualization.ScatterChart(newChart);
+        chart.draw(dataTable, options);
+      }
+
+      function drawBarPlot(data, title, variable) {
         // Create the data table.
         var dataTable = new google.visualization.DataTable();
         dataTable.addColumn('string', 'Mode');
@@ -61,13 +89,12 @@
 
         var chart = new google.visualization.BarChart(newChart);
         chart.draw(dataTable, options);
-
       }
 
       {% autoescape off %}
       function onLoad() {
         {% for res in results %}
-        drawChart({{ res.data }}, "{{ res.title }}", "{{ res.var }}");
+        drawPlot({{ res.data }}, "{{ res.title }}", "{{ res.type }}", "{{ res.var }}");
         {% endfor %}
       }
       {% endautoescape %}

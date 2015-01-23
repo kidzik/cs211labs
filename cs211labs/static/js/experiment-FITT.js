@@ -11,7 +11,7 @@ user_profile = {
 };
 
 // TODO 3: Define the number of tasks that will make up the workflow of the experiment for one subject
-num_tasks = 6;
+num_tasks = 60;
 
 // TODO 2: Define any experiment-specific data structures
 //Data for the GENEALOGY task
@@ -25,7 +25,7 @@ if (condition) {
 for (var i = 0; i < num_tasks / 2; i++){
     balls.push({'x': 0, 'y': 0, 'r': 0.1 });
 
-    if (condition && i == 3){
+    if ((condition) && (i == 3)){
 	balls.push(balls[5]);
 	continue;
     }
@@ -139,7 +139,7 @@ function endTask(){
 	    
 	//This part is experiment-specific
 	//We decide if the task was correct?
-	console.log("ended task - correctly? "+current_task_success + " in " + (current_task_elapsed_time - total_help_time) + " ms.");
+	console.log("ended task - correctly? " + current_task_success + " in " + (current_task_elapsed_time - total_help_time) + " ms.");
 	//We send store the data locally to be sent at the end of the experiment
 	var result = {
 	    "ordinal": Math.floor(current_task / 2),
@@ -149,7 +149,7 @@ function endTask(){
 	    "screen_width": screen_width,
 	    "screen_height": screen_height,
 	    "correct": current_task_success,
-	    "condition": condition?"random":"deterministic",
+	    "condition": condition?"deterministic":"random",
 	    "time": (current_task_elapsed_time - total_help_time)
 	};
 	if (current_task % 2 == 1)

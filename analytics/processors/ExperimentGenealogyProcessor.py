@@ -23,7 +23,7 @@ class ExperimentGenealogyProcessor(ExperimentProcessor):
             results[s + "errors"] = 0 if el['outcome_corr'] else 1
             results[s + "time"] = el['time'].__str__()
 
-        return results
+        return results, profile
 
     def process_results(self, results):
         # Format:
