@@ -45,7 +45,7 @@
 			  <div class="cover">
 
 			  	<img id="pauseStimulus" src="{% static 'img/dot.png' %}" />
-	            <h1 id="stimulus" class="cover-heading"></h1>
+	            <div id="stimulus"></div>
 	            <div id="stimulus-buttons"></div>
 	          </div>
 	          <p id="countdownMessage" class="text-right"><span id="initialMessage">The task is about to start. You will have <strong>2 minutes</strong> to solve as many tasks as you can.</span> <span id="clockpauses"></span> <span id="clocktask"></span><p>
@@ -55,7 +55,7 @@
 	</div>
 
 	<div class="well">
-  		<p id="keyInstructions" class="text-center animated-bg">Please use the Y/N and cursor keys to answer the symmetry question and destroy the ball, or use the buttons.</p>
+  		<p id="keyInstructions" class="text-center animated-bg">Please use the Y/N to answer the symmetry question, and cursor keys to destroy the ball (or use the buttons).</p>
   		
   		<p class="text-right"><a class="btn btn-default" href="javascript:showHelp();" role="button">Help &raquo;</a></p>
 		<div class="progress">

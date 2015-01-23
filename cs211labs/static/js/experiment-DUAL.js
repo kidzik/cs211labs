@@ -39,7 +39,8 @@ var game; //Do the game following this example http://examples.phaser.io/_site/v
 
 function init_specific(){
 
-        game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create });
+	//Initialize the game
+    game = new Phaser.Game(800, 600, Phaser.AUTO, 'stimulus', { preload: preload, create: create, update: update, render: render });
 
 	//Just in case, we hide the stimulus and buttons
 	$("#stimulus").hide();
@@ -50,6 +51,7 @@ function init_specific(){
 
 function preload () {
 
+	//Load all the needed images, both for the ball, cannon and for the symmetry figures
     game.load.image('logo', 'phaser.png');
 
 }
