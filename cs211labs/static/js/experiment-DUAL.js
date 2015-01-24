@@ -2,18 +2,21 @@
 var task_time_sym = 120; // time to do each task, in seconds
 var task_time_ball = 120;
 var task_time_dual = 120;
-var pause_time_single = 5; // pause between each task, in seconds
-var pause_time_dual = 0;
 
 //For this task we need some specific timers and variables
-var current_task_sym_success = false; //whether the current task has been successfully passed or not
-var current_task_ball_success = false; //whether the current task has been successfully passed or not
-var current_task_elapsed_time_sym = task_time_sym*1000; //time taken to solve this task (until keypress)
-var current_task_elapsed_time_ball = task_time_ball*1000; //time taken to solve this task (until keypress)
+var current_minitask_sym_success = false; //whether the current task has been successfully passed or not
+var current_minitask_ball_success = false; //whether the current task has been successfully passed or not
+var current_minitask_elapsed_time_sym = task_time_sym*1000; //time taken to solve this task (until keypress)
+var current_minitask_elapsed_time_ball = task_time_ball*1000; //time taken to solve this task (until keypress)
 var help_timestamp = 0; //moment in which we accessed the help
 var total_help_time = 0; //total time spent in help during this task
 
-var current_task_sym=0;
+var current_minitask=0;
+var minitask_time_sym=10; //Time to answer the minitask about symmetry
+							//For the ball game, it only depends on the time it takes to reach the ground (may change)
+
+var results_baseline_ball = [];
+var results_baseline_sym = [];
 
 
 // TODO 1: Define the user profile useful for this task (to be shown as a form in the intro)
@@ -28,7 +31,7 @@ user_profile = {
 // TODO 2: Define any experiment-specific data structures
 //Data for the DUAL task
 //These are the sets of shapes
-var tasks_sym = [
+var tasks_sym_constant = [
 {
 	image1: "1a.jpg", 
 	image2: "1b.jpg", 
@@ -36,11 +39,19 @@ var tasks_sym = [
 }
 ];
 
+var tasks_sym_increasing = [
+{
+	image1: "1a.jpg", 
+	image2: "1b.jpg", 
+	symmetrical: false 
+}
+];
+
+var tasks_sym = tasks_sym_constant; //For the initial baseline test, the difficulty will not increase
+var num_minitasks = tasks_sym.length;
+
 var ball_speed = 1; //speed at which the ball falls
 
-var increase_difficulty_ball = function(){ //Each time we call this, the difficulty increases (for now, just speed increase by 1)
-	ball_speed++;
-}
 
 // TODO 3: Define the number of tasks that will make up the workflow of the experiment for one subject
 num_tasks = 3; //i.e. the two single tasks, plus the dual task
@@ -48,13 +59,33 @@ num_tasks = 3; //i.e. the two single tasks, plus the dual task
 
 // TODO 4: Define the init-specific() function with 
 var game;
-//Do the game following this example http://examples.phaser.io/_site/view_full.html?d=games&f=invaders.js&t=invaders
+//Shooter game following this example http://examples.phaser.io/_site/view_full.html?d=games&f=invaders.js&t=invaders
 
 function init_specific(){
 
 	//Decide the condition randomly - to get equal number of people, for now we do even userids A and odd ones, B
-	if(user_id % 2 == 0) user_profile.condition = "A";
-	else user_profile.condition = "B";
+	if(user_id % 2 == 0){
+		user_profile.condition = "A";
+	} 
+	else{
+		user_profile.condition = "B";
+	} 
+
+	//We add the behavior to capture keypresses
+	$(document).keypress(function(e){
+		if(on_task && !on_modal && current_minitask<num_minitasks){
+	    	if(e.which == 89 || e.which == 121){// pressed y
+
+	    		yes();
+
+	    	}else if(e.which == 78 || e.which == 110){// pressed n
+
+	    		no();
+	    		
+	    	}
+		}
+	});
+
 
 
 	//Just in case, we hide the stimulus and buttons, as we begin with the pause stimulus
@@ -276,21 +307,20 @@ function startTask(){
 			});
 		$('#clocktask').countdown({
 				until: '+'+task_time_sym+'s', 
-		    	layout: '<span class="huge">{sn}</span>s',
+		    	layout: '<span class="huge">{mn}</span>m <span class="huge">{sn}</span>s',
 		    	onExpiry: endTask 
 		    }); //We initialize the clock
 		$('#clocktask').countdown('option',{
 				until: '+'+task_time_sym+'s', 
-		    	layout: '<span class="huge">{sn}</span>s',
+		    	layout: '<span class="huge">{mn}</span>m <span class="huge">{sn}</span>s',
 		    	onExpiry: endTask 
 		    });// In case the clock was already initialized, we restart it
 
-		if(tasks_sym[current_task_sym]){ //If we have enough shape tasks to show yet
-			$("#shape-left").append("<img id='image1' src='/static/img/"+tasks_sym[current_task_sym].image1+"'/>");			
-			$("#shape-right").append("<img id='image2' src='/static/img/"+tasks_sym[current_task_sym].image2+"'/>");
-			$("#shape-left").show();
-			$("#shape-right").show();	
-		}
+		current_minitask = 0;//Initialize the number of shapes tasks within this first phase
+
+		startMiniTask();
+
+
 
 
 	} else if(current_task==1){//Start the game task
@@ -309,6 +339,10 @@ function startTask(){
 		current_task_elapsed_time_ball = task_time_ball*1000; //time taken to solve this task (until keypress)
 		help_timestamp = 0; //moment in which we accessed the help
 		total_help_time = 0; //total time spent in help during this task
+
+		//Depending on the condition, assign the right set of symmetry tasks to tasks_sym
+		if(user_profile.condition=="A") tasks_sym = tasks_sym_constant;
+		else tasks_sym = tasks_sym_increasing;
 
 	}
 
@@ -346,22 +380,140 @@ function startTask(){
 	on_task = true;
 }
 
+
+function startMiniTask(){
+
+		if(tasks_sym[current_minitask]){ //If we have enough shape tasks to show yet
+			$("#shape-left").append("<img id='image1' src='/static/img/"+tasks_sym[current_minitask].image1+"'/>");			
+			$("#shape-right").append("<img id='image2' src='/static/img/"+tasks_sym[current_minitask].image2+"'/>");
+			$("#shape-left").show();
+			$("#shape-right").show();	
+		}
+
+		//We generate the response buttons and their behavior
+		var buttons="";
+		if(tasks_sym[current_minitask].symmetrical){//The shapes are symmetric, so the good response is Y
+			buttons += 	'&nbsp;<button type="button" class="btn btn-default btn-lg correct-btn">Yes</button>';
+			buttons += 	'&nbsp;<button type="button" class="btn btn-default btn-lg incorrect-btn">No</button>';
+		} else {//button for N is the correct solution
+			buttons += 	'&nbsp;<button type="button" class="btn btn-default btn-lg incorrect-btn">Yes</button>';
+			buttons += 	'&nbsp;<button type="button" class="btn btn-default btn-lg correct-btn">No</button>';
+		}
+		buttons += 	'&nbsp;<button type="button" class="btn btn-default btn-lg incorrect-btn">I don\'t know!</button>';
+		$("#stimulus-buttons").html(buttons);
+		$('.correct-btn').on('click', function () {
+	    	if(on_task && !on_modal && current_minitask<num_minitasks){
+	    		correct();
+	    	}
+	  	})
+		$('.incorrect-btn').on('click', function () {
+	    	if(on_task && !on_modal && current_minitask<num_minitasks){
+	    		incorrect();
+	    	}
+	  	})
+		$("#stimulus-buttons").show();
+
+
+		//We start and display the minitask countdown
+		$('#clockminitask').show();
+		$('#clockminitask').countdown({
+				until: '+'+task_time_sym+'s', 
+		    	layout: '<span class="huge">{sn}</span>s',
+		    	onExpiry: endTask 
+		    }); //We initialize the clock
+		$('#clockminitask').countdown('option',{
+				until: '+'+task_time_sym+'s', 
+		    	layout: '<span class="huge">{sn}</span>s',
+		    	onExpiry: endTask 
+		    });// In case the clock was already initialized, we restart it
+
+
+}
+
+function yes(){//A yes has been registered... is it correct?
+	if(current_task == 0 || current_task == 2){// This does not apply to the single task game task
+		if(tasks_sym[current_minitask].symmetrical) correct();
+		else incorrect();
+	}
+
+}
+
+function no(){//A yes has been registered... is it correct?
+	if(current_task == 0 || current_task == 2){// This does not apply to the single task game task
+		if(!tasks_sym[current_minitask].symmetrical) correct();
+		else incorrect();
+	}
+
+}
+
 function correct(){
-				current_task_success=true;
+				current_minitask_success=true;
 
 	    		var time = (new Date()).getTime();
-	    		current_task_elapsed_time = time - current_task_timestamp;
+	    		current_minitask_elapsed_time = time - current_minitask_timestamp;
 
-	    		endTask();
+	    		endMiniTask();
 }
 
 function incorrect(){
-				current_task_success=false;
+				current_minitask_success=false;
 
 	    		var time = (new Date()).getTime();
-	    		current_task_elapsed_time = time - current_task_timestamp;
+	    		current_minitask_elapsed_time = time - current_minitask_timestamp;
 
-	    		endTask();
+	    		endMiniTask();
+}
+
+
+
+function endMiniTask(){
+
+	if(current_minitask<num_minitasks){// Just in case, it looks like this is called twice on ending
+		
+		//This part is experiment-specific
+		//We decide if the task was correct?
+		console.log("ended minitask - correctly? ball "+current_minitask_ball_success + "  sym "+current_minitask_sym_success + "in ball " + (current_task_elapsed_time_ball - total_help_time) + " ms. sym " + (current_task_elapsed_time_sym - total_help_time) + " ms.");
+		//We send store the data locally to be sent at the end of the experiment
+		var result = {
+		  "ordinal": current_minitask,
+		  "outcome_ball_corr": current_minitask_ball_success,
+		  "time_ball": (current_minitask_elapsed_time_ball - total_help_time),
+		  "outcome_sym_corr": current_minitask_sym_success,
+		  "time_sym": (current_minitask_elapsed_time_sym - total_help_time),
+		};
+
+
+		if(current_task==0){ // If we are in the symmetry baseline, we add it to another array of results, which will be used to calculate the baseline
+			results_baseline_sym.push(result);
+		} else if(current_task==1){ // If we are in the symmetry baseline, we add it to another array of results, which will be used to calculate the baseline
+			results_baseline_ball.push(result);
+		} else if(current_task==2){ // It is the dual task, we really add it to the results array
+			results.push(result);
+		}
+
+		//This part is largely generic, but has some experiment-specific stuff
+		if(current_minitask<(tasks_sym.length-1)){
+
+			//Experiment-specific transition between task and pause (exchange stimuli)
+			current_minitask++;
+
+			//TODO: We reset the minitask
+			if(current_task==0){ // If we are in the symmetry baseline
+
+			} else if(current_task==1){ // If we are in the symmetry baseline
+
+			} else if(current_task==2){ // It is the dual task
+
+			}
+
+
+		} else {
+			current_minitask++;
+
+			endTask();
+		}
+	}
+
 }
 
 // TODO 6: Define the endTask() function with whatever happens at the end of each task (hide stimuli, stop timers, build task result data)
