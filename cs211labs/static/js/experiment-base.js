@@ -104,6 +104,7 @@ function resumeCounters(){
 	console.log('resuming counters');
 	$('#clocktask').countdown('resume');
 	$('#clockpauses').countdown('resume');
+    if($('#clockminitask') && $('#clockminitask').countdown) $('#clockminitask').countdown('resume');//For the experiment 4, which has a minitask counter
 
 }
 
@@ -113,6 +114,8 @@ function pauseCounters(){
 	console.log('pausing counters');
 	$('#clocktask').countdown('pause');
 	$('#clockpauses').countdown('pause');
+    if($('#clockminitask') && $('#clockminitask').countdown) $('#clockminitask').countdown('pause');//For the experiment 4, which has a minitask counter
+
 
 }
 

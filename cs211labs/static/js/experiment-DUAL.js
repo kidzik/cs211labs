@@ -1,19 +1,22 @@
 // TODO 0: General parameters of this experiment (time for each task and pauses in between)
-var task_time_sym = 120; // time to do each task, in seconds
-var task_time_ball = 120;
-var task_time_dual = 120;
-
-//For this task we need some specific timers and variables
-var current_minitask_sym_success = false; //whether the current task has been successfully passed or not
-var current_minitask_ball_success = false; //whether the current task has been successfully passed or not
-var current_minitask_elapsed_time_sym = task_time_sym*1000; //time taken to solve this task (until keypress)
-var current_minitask_elapsed_time_ball = task_time_ball*1000; //time taken to solve this task (until keypress)
-var help_timestamp = 0; //moment in which we accessed the help
-var total_help_time = 0; //total time spent in help during this task
+var task_time_sym = 40; // time to do each task, in seconds
+var task_time_ball = 40;
+var task_time_dual = 40;
 
 var current_minitask=0;
 var minitask_time_sym=10; //Time to answer the minitask about symmetry
 							//For the ball game, it only depends on the time it takes to reach the ground (may change)
+var current_minitask_timestamp=0;//Timestamp for each minitask
+
+//For this task we need some specific timers and variables
+var current_minitask_sym_success = false; //whether the current task has been successfully passed or not
+var current_minitask_ball_success = false; //whether the current task has been successfully passed or not
+var current_minitask_elapsed_time_sym = minitask_time_sym*1000; //time taken to solve this task (until keypress)
+var current_minitask_elapsed_time_ball = minitask_time_sym*1000; //time taken to solve this task (until keypress)
+var help_timestamp = 0; //moment in which we accessed the help
+var total_help_time = 0; //total time spent in help during this task
+
+
 
 var results_baseline_ball = [];
 var results_baseline_sym = [];
@@ -46,6 +49,13 @@ var tasks_sym_increasing = [
 	symmetrical: false 
 }
 ];
+
+//FIXME: For now, I just create two sets with 200 identical elements, untill we have the real shape data
+for (i=0;i<200;i++){
+	tasks_sym_constant.push(tasks_sym_constant[0]);
+	tasks_sym_increasing.push(tasks_sym_increasing[0]);
+}
+
 
 var tasks_sym = tasks_sym_constant; //For the initial baseline test, the difficulty will not increase
 var num_minitasks = tasks_sym.length;
@@ -184,29 +194,18 @@ function setupInvader (invader) {
 
 }
 
-function update () {
 
-	//Load all the needed images, both for the ball, cannon and for the symmetry figures
-    game.load.image('logo', 'phaser.png');
-
-}
-
-function render () {
-
-    var logo = game.add.sprite(game.world.centerX, game.world.centerY, 'logo');
-    logo.anchor.setTo(0.5, 0.5);
-
-}
 
 function touchGround() {
 
-    endTask();
+	current_minitask_ball_success=false;
+    endMiniTask();
 
 }
 
 function update() {
 
-    if (player.alive)
+    if (player.alive && player.body)
     {
         //  Reset the player, then check for movement keys
         player.body.velocity.setTo(0, 0);
@@ -240,8 +239,10 @@ function collisionHandler (bullet, alien) {
     explosion.reset(alien.body.x, alien.body.y);
     explosion.play('kaboom', 30, false, true);
 
+    current_minitask_ball_success=true;
+
     //  End the task
-    endTask();
+    endMiniTask();
     
 
 }
@@ -278,7 +279,7 @@ function restart () {
     
     //  And brings the aliens back from the dead :)
     aliens.removeAll();
-    createAliens();
+    createBall();
 
     //revives the player
     player.revive();
@@ -288,15 +289,36 @@ function restart () {
 // TODO 5: Define the startTask() function with whatever happens at the beginning of each task (show stimuli, countdown timers, initialize task timestamps)
 function startTask(){
 
+	console.log("starting task "+current_task);
+
 	//Experiment-specific stuff
 	$("#pauseStimulus").hide();
 	$("#stimulus").show();
-
+	$("#countdownMinitask").show();
 
 	// Basically, do three cases for the 3 different phases: 0-shape, 1-game, 2-dual
 	if(current_task==0){//Start the shapes task
 
+		//Show the shapes divs, just in case
+		$("#shape-left").show();
+		$("#shape-right").show();
+		$("#stimulus-game").hide();
+
 		//We do not initialize the game yet
+
+		// Initialize the variables for this task
+		current_minitask_sym_success = false; //whether the current task has been successfully passed or not
+		current_minitask_ball_success = false; //whether the current task has been successfully passed or not
+		current_minitask_elapsed_time_sym = minitask_time_sym*1000; //time taken to solve this task (until keypress)
+		current_minitask_elapsed_time_ball = minitask_time_sym*1000; //time taken to solve this task (until keypress)
+		help_timestamp = 0; //moment in which we accessed the help
+		total_help_time = 0; //total time spent in help during this task
+
+		//Depending on the condition, assign the right set of symmetry tasks to tasks_sym
+		if(user_profile.condition=="A") tasks_sym = tasks_sym_constant;
+		else tasks_sym = tasks_sym_increasing;
+
+
 
 		//We start and display the task countdown
 		$('#initialMessage').hide();
@@ -325,18 +347,59 @@ function startTask(){
 
 	} else if(current_task==1){//Start the game task
 
-
-	} else if(current_task==2){//Start the dual task
+		$("#shape-left").hide();
+		$("#shape-right").hide();
+		$("#stimulus-game").show();
 
 		//Initialize the game?
 		game = new Phaser.Game(400, 600, Phaser.AUTO, 'stimulus-game', { preload: preload, create: create, update: update });
 
+		// Initialize the variables for this task
+		current_minitask_sym_success = false; //whether the current task has been successfully passed or not
+		current_minitask_ball_success = false; //whether the current task has been successfully passed or not
+		current_minitask_elapsed_time_sym = minitask_time_sym*1000; //time taken to solve this task (until keypress)
+		current_minitask_elapsed_time_ball = minitask_time_sym*1000; //time taken to solve this task (until keypress)
+		help_timestamp = 0; //moment in which we accessed the help
+		total_help_time = 0; //total time spent in help during this task
+
+		//We start and display the task countdown
+		$('#initialMessage').hide();
+		$('#clocktask').show();
+		$('#clockpauses').hide();
+		$('#clockpauses').countdown('option',{
+				onExpiry: null
+			});
+		$('#clocktask').countdown({
+				until: '+'+task_time_sym+'s', 
+		    	layout: '<span class="huge">{mn}</span>m <span class="huge">{sn}</span>s',
+		    	onExpiry: endTask 
+		    }); //We initialize the clock
+		$('#clocktask').countdown('option',{
+				until: '+'+task_time_sym+'s', 
+		    	layout: '<span class="huge">{mn}</span>m <span class="huge">{sn}</span>s',
+		    	onExpiry: endTask 
+		    });// In case the clock was already initialized, we restart it
+
+		current_minitask = 0;//Initialize the number of ball tasks within this first phase
+
+		startMiniTask();
+
+
+	} else if(current_task==2){//Start the dual task
+
+		$("#shape-left").show();
+		$("#shape-right").show();
+		$("#stimulus-game").show();
+
+
+		//Restart the game
+		restart();
 
 		// Initialize the variables for this task
-		current_task_sym_success = false; //whether the current task has been successfully passed or not
-		current_task_ball_success = false; //whether the current task has been successfully passed or not
-		current_task_elapsed_time_sym = task_time_sym*1000; //time taken to solve this task (until keypress)
-		current_task_elapsed_time_ball = task_time_ball*1000; //time taken to solve this task (until keypress)
+		current_minitask_sym_success = false; //whether the current task has been successfully passed or not
+		current_minitask_ball_success = false; //whether the current task has been successfully passed or not
+		current_minitask_elapsed_time_sym = minitask_time_sym*1000; //time taken to solve this task (until keypress)
+		current_minitask_elapsed_time_ball = minitask_time_sym*1000; //time taken to solve this task (until keypress)
 		help_timestamp = 0; //moment in which we accessed the help
 		total_help_time = 0; //total time spent in help during this task
 
@@ -344,35 +407,30 @@ function startTask(){
 		if(user_profile.condition=="A") tasks_sym = tasks_sym_constant;
 		else tasks_sym = tasks_sym_increasing;
 
+		//We start and display the task countdown
+		$('#initialMessage').hide();
+		$('#clocktask').show();
+		$('#clockpauses').hide();
+		$('#clockpauses').countdown('option',{
+				onExpiry: null
+			});
+		$('#clocktask').countdown({
+				until: '+'+task_time_sym+'s', 
+		    	layout: '<span class="huge">{mn}</span>m <span class="huge">{sn}</span>s',
+		    	onExpiry: endTask 
+		    }); //We initialize the clock
+		$('#clocktask').countdown('option',{
+				until: '+'+task_time_sym+'s', 
+		    	layout: '<span class="huge">{mn}</span>m <span class="huge">{sn}</span>s',
+		    	onExpiry: endTask 
+		    });// In case the clock was already initialized, we restart it
+
+		current_minitask = 0;//Initialize the number of shapes/ball tasks within this first phase
+
+		startMiniTask();
+
+
 	}
-
-
-
-
-	//We generate the response buttons and their behavior
-	// var buttons="";
-	// for (i = 0; i<phrases[current_task].options.length; i++){
-	// 	if(phrases[current_task].options[i]==phrases[current_task].solution){//button for the correct solution
-	// 		buttons += 	'&nbsp;<button type="button" class="btn btn-default btn-lg correct-btn">'+phrases[current_task].options[i]+'</button>';
-	// 	} else {//button for an incorrect solution
-	// 		buttons += 	'&nbsp;<button type="button" class="btn btn-default btn-lg incorrect-btn">'+phrases[current_task].options[i]+'</button>';
-	// 	}
-	// }
-	// buttons += 	'&nbsp;<button type="button" class="btn btn-default btn-lg incorrect-btn">I don\'t know!</button>';
-	// $("#stimulus-buttons").html(buttons);
-	// $('.correct-btn').on('click', function () {
- //    	if(on_task && !on_modal && current_task<num_tasks){
- //    		correct();
- //    	}
- //  	})
-	// $('.incorrect-btn').on('click', function () {
- //    	if(on_task && !on_modal && current_task<num_tasks){
- //    		incorrect();
- //    	}
- //  	})
-	// $("#stimulus-buttons").show();
-
-
 
 
 	// This part should also be in all experiments, probably
@@ -383,12 +441,21 @@ function startTask(){
 
 function startMiniTask(){
 
+	console.log("starting minitask "+current_minitask);
+
+
+	if(current_task==0 || current_task==2){//If we are in the symmetry baseline or the dual task
+		//We show the corresponding shapes on the sides
 		if(tasks_sym[current_minitask]){ //If we have enough shape tasks to show yet
-			$("#shape-left").append("<img id='image1' src='/static/img/"+tasks_sym[current_minitask].image1+"'/>");			
-			$("#shape-right").append("<img id='image2' src='/static/img/"+tasks_sym[current_minitask].image2+"'/>");
+			$("#shape-left").html("<img id='image1' src='/static/img/"+tasks_sym[current_minitask].image1+"'/>");			
+			$("#shape-right").html("<img id='image2' src='/static/img/"+tasks_sym[current_minitask].image2+"'/>");
 			$("#shape-left").show();
 			$("#shape-right").show();	
 		}
+	}
+
+
+
 
 		//We generate the response buttons and their behavior
 		var buttons="";
@@ -417,16 +484,22 @@ function startMiniTask(){
 		//We start and display the minitask countdown
 		$('#clockminitask').show();
 		$('#clockminitask').countdown({
-				until: '+'+task_time_sym+'s', 
+				until: '+'+minitask_time_sym+'s', 
 		    	layout: '<span class="huge">{sn}</span>s',
-		    	onExpiry: endTask 
+		    	onExpiry: incorrect 
 		    }); //We initialize the clock
 		$('#clockminitask').countdown('option',{
-				until: '+'+task_time_sym+'s', 
+				until: '+'+minitask_time_sym+'s', 
 		    	layout: '<span class="huge">{sn}</span>s',
-		    	onExpiry: endTask 
+		    	onExpiry: incorrect 
 		    });// In case the clock was already initialized, we restart it
 
+		//We reset the help time counters as well
+		help_timestamp = 0; //moment in which we accessed the help
+		total_help_time = 0; //total time spent in help during this task
+		current_minitask_sym_success = false;
+		current_minitask_ball_success = false;
+		current_minitask_timestamp = (new Date()).getTime();
 
 }
 
@@ -447,19 +520,19 @@ function no(){//A yes has been registered... is it correct?
 }
 
 function correct(){
-				current_minitask_success=true;
+				current_minitask_sym_success=true;
 
 	    		var time = (new Date()).getTime();
-	    		current_minitask_elapsed_time = time - current_minitask_timestamp;
+	    		current_minitask_elapsed_time_sym = time - current_minitask_timestamp;
 
 	    		endMiniTask();
 }
 
 function incorrect(){
-				current_minitask_success=false;
+				current_minitask_sym_success=false;
 
 	    		var time = (new Date()).getTime();
-	    		current_minitask_elapsed_time = time - current_minitask_timestamp;
+	    		current_minitask_elapsed_time_sym = time - current_minitask_timestamp;
 
 	    		endMiniTask();
 }
@@ -468,11 +541,22 @@ function incorrect(){
 
 function endMiniTask(){
 
+	// We disable the minitask clock, so that it does not trigger this function again
+	$('#clockminitask').countdown('option',{
+	   	onExpiry: null 
+	});
+
+
+	if(current_task==1 || current_task==2){//If we are in the ball baseline or the dual task
+		//We reset the ball game
+		restart();
+	}
+
 	if(current_minitask<num_minitasks){// Just in case, it looks like this is called twice on ending
 		
 		//This part is experiment-specific
 		//We decide if the task was correct?
-		console.log("ended minitask - correctly? ball "+current_minitask_ball_success + "  sym "+current_minitask_sym_success + "in ball " + (current_task_elapsed_time_ball - total_help_time) + " ms. sym " + (current_task_elapsed_time_sym - total_help_time) + " ms.");
+		console.log("ended minitask - correctly? ball "+current_minitask_ball_success + "  sym "+current_minitask_sym_success + "in ball " + (current_minitask_elapsed_time_ball - total_help_time) + " ms. sym " + (current_minitask_elapsed_time_sym - total_help_time) + " ms.");
 		//We send store the data locally to be sent at the end of the experiment
 		var result = {
 		  "ordinal": current_minitask,
@@ -491,19 +575,19 @@ function endMiniTask(){
 			results.push(result);
 		}
 
-		//This part is largely generic, but has some experiment-specific stuff
-		if(current_minitask<(tasks_sym.length-1)){
+		//If we still have more minitasks of this kind (or it is the single ball task, which is technically unlimited)
+		if(current_task==1 || current_minitask<(tasks_sym.length-1)){
 
 			//Experiment-specific transition between task and pause (exchange stimuli)
 			current_minitask++;
 
-			//TODO: We reset the minitask
+			//We reset the minitask
 			if(current_task==0){ // If we are in the symmetry baseline
-
-			} else if(current_task==1){ // If we are in the symmetry baseline
-
+				startMiniTask();
+			} else if(current_task==1){ // If we are in the ball baseline
+				startMiniTask();
 			} else if(current_task==2){ // It is the dual task
-
+				startMiniTask();
 			}
 
 
@@ -519,22 +603,46 @@ function endMiniTask(){
 // TODO 6: Define the endTask() function with whatever happens at the end of each task (hide stimuli, stop timers, build task result data)
 function endTask(){
 
+	// We disable the minitask clock, so that it does not trigger this function again
+	$('#clockminitask').countdown('option',{
+	   	onExpiry: null 
+	});
+
 	if(current_task<num_tasks){// Just in case, it looks like this is called twice on ending
 		
 		//This part is experiment-specific
 		//We decide if the task was correct?
-		console.log("ended task - correctly? "+current_task_success + " in " + (current_task_elapsed_time - total_help_time) + " ms.");
-		//We send store the data locally to be sent at the end of the experiment
-		var result = {
-		  "ordinal": current_task,
-		  "num_elements": phrases[current_task].num_elements,
-		  "outcome_corr": current_task_success,
-		  "time": (current_task_elapsed_time - total_help_time)
-		};
-		results.push(result);
+		console.log("ended task "+current_task);
+
+		$('#countdownMinitask').hide();
+
+		if(current_task==0){//If it is the symmetry task, we calculate the symmetry baseline: how many tasks completed in the last 30s?
+			//We sum the duration of the tasks correctly completed (starting from the end) until we sum 30000ms
+			var completed = 0;
+			var completion_time=0;
+			for(i=results_baseline_sym.length-1; i>=0; i--){
+				completion_time+=results_baseline_sym[i].time_sym;
+				if(completion_time>30000) break;//We only count the tasks whose duration is fully within the last 30s
+				if(results_baseline_sym[i].outcome_sym_corr) completed++; //We only count the tasks correctly completed
+			}
+			user_profile.baseline_sym = completed;
+
+		}else if(current_task==1){//If it is the ball game task, we calculate the ball baseline: how many tasks completed in the last 30s?
+			//We sum the duration of the tasks correctly completed (starting from the end) until we sum 30000ms
+			var completed = 0;
+			var completion_time=0;
+			for(i=results_baseline_ball.length-1; i>=0; i--){
+				completion_time+=results_baseline_ball[i].time_ball;
+				if(completion_time>30000) break;//We only count the tasks whose duration is fully within the last 30s
+				if(results_baseline_ball[i].outcome_ball_corr) completed++; //We only count the tasks correctly completed
+			}
+			user_profile.baseline_ball = completed;
+
+		}
+		
 
 		//This part is largely generic, but has some experiment-specific stuff
-		if(current_task<(phrases.length-1)){
+		if(current_task<(num_tasks-1)){
 
 			//Experiment-specific transition between task and pause (exchange stimuli)
 			//We display the big dot
