@@ -19,12 +19,10 @@ class ExperimentTrainProcessor(ExperimentProcessor):
         for el in data:
             s = ""
             s = s + el['ordinal'].__str__() + "/"
-            s = s + ("correct" if el['correct'] else "incorrect") + "/"
-            s = s + ("consistent" if el['consistent'] else "inconsistent") + "/"
-            s = s + el['color_tex'] + "/"
-            s = s + el['color_vis'] + "/"
+            s = s + el['interface'] + "/"
 #            s = s + ("colorblind" if profile['colorblind'] else "notcolorblind") + "/"
             results[s + "errors"] = 0 if el['outcome_corr'] else 1
+            results[s + "help"] = el['help']
             results[s + "time"] = el['time'].__str__()
 
         return results, profile
@@ -32,11 +30,23 @@ class ExperimentTrainProcessor(ExperimentProcessor):
 
     def process_results(self, results):
         super(ExperimentTrainProcessor, self).process_results(results)
-        processed = {}
+        processed = []
 
-        # Format:
-        #  - tba
-        # Example: "2/errors"
- 
+        data = self.get_data(results, "errors", 2, 0, range(4))
+        data.sort()
+        processed.append({'data': [["time","value"],] + data, 'title': "Mean errors per try", 'var': "Mean errors", 'type': 'line'})
+
+        data = self.get_data(results, "time", 2, 0, range(4))
+        data.sort()
+        processed.append({'data': [["time","value"],] + data, 'title': "Mean time per try", 'var': "Mean time", 'type': 'line'})
+
+
+        processed.append({'data': self.get_data(results, "time", 2, 1, ["command", "graphical", "form", "dragdrop"]), 'title': "Mean time per interface", 'var': "Mean time", 'type': 'barplot'})
+
+        processed.append({'data': self.get_data(results, "errors", 2, 1, ["command", "graphical", "form", "dragdrop"]), 'title': "Mean errors per interface", 'var': "Mean errors", 'type': 'barplot'})
+
+        processed.append({'data': self.get_data(results, "help", 2, 1, ["command", "graphical", "form", "dragdrop"]), 'title': "Mean help requests per interface", 'var': "Mean help requests", 'type': 'barplot'})
+
+    
         return processed
 

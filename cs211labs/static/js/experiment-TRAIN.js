@@ -136,7 +136,7 @@ function interface_result(ticket){
     if (Math.random() > 0.5)
 	correct();
     else
-	correct();
+	incorrect();
     return;
 
     ticket.bike = (ticket.bike=="yes")?true:false;

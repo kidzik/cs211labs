@@ -42,6 +42,8 @@
           drawBarPlot(data, title, variable);
         if (type == "scatter")
           drawScatterPlot(data, title);
+        if (type == "line")
+          drawLinePlot(data, title);
       }
       
       function drawScatterPlot(data, title) {
@@ -62,6 +64,30 @@
         charts.appendChild(newChart);
 
         var chart = new google.visualization.ScatterChart(newChart);
+        chart.draw(dataTable, options);
+      }
+
+      function drawLinePlot(data, title) {
+        var dataTable = google.visualization.arrayToDataTable(data);
+
+        var options = {
+          'title': title,
+          'width':600,
+          'height':500,
+          'legend': 'none',
+          'hAxis': {
+             'format': '0'
+          }
+        };
+
+        // Instantiate and draw our chart, passing in some options.
+        var charts = document.getElementById('charts');
+        var newChart = document.createElement('div');
+        var content = document.createTextNode('test');
+        newChart.appendChild(content);
+        charts.appendChild(newChart);
+
+        var chart = new google.visualization.LineChart(newChart);
         chart.draw(dataTable, options);
       }
 
