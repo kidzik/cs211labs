@@ -1,1 +1,73 @@
-Experiment 1
+{% extends "experiment.html" %}
+
+{% load staticfiles %}
+
+{% block css-files %}
+    <!-- Custom styles for this experiment -->
+    <link href="{% static 'css/TRAIN.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block experiment-intro-title %}The Train Tickets game{% endblock %}
+
+{% block experiment-end-title %}The Train Tickets game{% endblock %}
+
+{% block experiment-title %}CS211-3: The Train Tickets game{% endblock %}
+
+{% block experiment-intro-text %}<p>Desc</p>{% endblock %}
+
+{% block experiment-profile-form %}
+	<br/>
+	<label for="id_device">What kind of device are you using?</label>
+	<select id="id_device" name="device">
+		<option value="LT">Laptop with a touchpad</option>
+		<option value="LM" selected>Computer with a mouse</option>
+		<option value="T">Tablet</option>
+		<option value="P">Phone</option>
+	</select>
+	<br/>
+	<input type="submit" class="btn btn-lg btn-primary" value="Save information" />
+{% endblock %}
+
+{% block experiment-end-text %}
+	<p>Thanks a lot for your participation!</p>
+{% endblock %}
+
+
+{% block experiment-content %}
+	<div id="mainDisplay">
+
+
+	  <div class="site-wrapper">
+
+			<div class="site-wrapper-inner">
+
+	        <div class="cover-container">
+<div id="interface"></div>
+			  <div class="cover">
+
+			  	<img id="pauseStimulus" src="{% static 'img/dot.png' %}" />
+	            <h1 id="stimulus" class="cover-heading"></h1>
+	            <div id="stimulus-buttons"></div>
+	          </div>
+	          <p id="countdownMessage" class="text-right"><span id="initialMessage">The task is about to start. You will have <strong>30s.</strong> to respond.</span> <span id="clockpauses"></span> <span id="clocktask"></span><p>
+	        </div>
+	    </div>
+	  </div>
+	</div>
+
+	<div class="well">
+  		<p id="keyInstructions" class="text-center animated-bg">Please select the correct answer to the question.</p>
+  		
+  		<p class="text-right"><a class="btn btn-default" id="help-button" href="javascript:showHelp();" role="button">Help &raquo;</a></p>
+		<div class="progress">
+        	<div id="taskProgress" class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">0% done</div>
+      	</div>
+  	</div>
+{% endblock %}
+
+
+
+
+{% block experiment-script %}
+    <script src="{% static 'js/experiment-TRAIN.js' %}"></script>
+{% endblock %}
