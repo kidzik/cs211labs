@@ -1,6 +1,6 @@
 // TODO 0: General parameters of this experiment (time for each task and pauses in between)
 task_time = 60; // time to do each task, in seconds
-pause_time = 1; // pause between each task, in seconds
+pause_time = 5; // pause between each task, in seconds
 
 
 // TODO 1: Define the user profile useful for this task (to be shown as a form in the intro)
@@ -12,7 +12,7 @@ user_profile = {
 var help_hits;
 
 // TODO 3: Define the number of tasks that will make up the workflow of the experiment for one subject
-num_tasks = 4;
+num_tasks = 15;
 
 // TODO 2: Define any experiment-specific data structures
 //Data for the GENEALOGY task
@@ -23,7 +23,7 @@ var fares = ["standard", "young", "half-fare"]
 var travel = ["one-way", "return"]
 var bike = ["yes", "no"]
 
-var interfaces = ["command", "graphical", "form", "dragdrop"]
+var interfaces = ["command", "graphical", "form"]
 
 function generate_ticket(){
     var nfare = Math.floor(Math.random() * fares.length); 
@@ -132,15 +132,10 @@ function startTask(){
 }
 
 function interface_result(ticket){
-// TODO
-    if (Math.random() > 0.5)
-	correct();
-    else
-	incorrect();
-    return;
-
-    ticket.bike = (ticket.bike=="yes")?true:false;
     ticket.travelClass = parseInt(ticket.travelClass);
+
+    console.log(ticket);
+    console.log(tickets[current_task]);
 
     if (tickets[current_task].from == ticket.from &&
        tickets[current_task].to == ticket.to &&
@@ -169,7 +164,11 @@ function endTask(){
     var time = (new Date()).getTime();
     current_task_elapsed_time = time - current_task_timestamp;
 
+    $("#interface").html("");
     $("#interface").hide();
+
+    $("#keyInstructions").html("Please buy the ticket exactly like the one which will apear here.");
+
 
     if(current_task<num_tasks){// Just in case, it looks like this is called twice on ending
 	

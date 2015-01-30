@@ -13,7 +13,27 @@
 
 {% block experiment-title %}CS211-3: The Train Tickets game{% endblock %}
 
-{% block experiment-intro-text %}<p>Desc</p>{% endblock %}
+{% block experiment-intro-text %}
+<p>You are about to see three interfaces for ordering tickets. They will be presented in the random order. Your task is to order a ticket, requested on the bottom of each page.</p>
+
+<p><strong>Command line interface.</strong> In this interface you write a command in the following format:
+<pre>from [city] to [city] {young|half-fare|standard} {bike}
+    {one-way|return} {C1|C2}</pre>
+where cities are obligatory. Optional arguments are {young|half-fare|standard} stands for fare, {bike} for ticket with a bike, {one-way|return} for the type of travel and {C1|C2} is the first or the second class.</p
+<p>Example</p>
+<pre>
+from Zurich to Lausanne young C1 one-way
+</pre>
+<p>will order a ticket 1st class one-way from Zurich to Lausanne with a discount for young people and without bike.</p>
+
+<p><strong>Graphical interface.</strong> In this interface you choose a cities from the map. The first chosen city is the one you from which you start the travel and the second is the destination. Other options are to be chosen from the form under the map.</p>
+
+<p><strong>Form interface.</strong> Choose your city, destination, fare and other options from a form.</p>
+
+<p>
+Note that options one-way, standard fare, 2nd class and no bike are default in each interface.
+</p>
+{% endblock %}
 
 {% block experiment-profile-form %}
 	<br/>
@@ -56,7 +76,7 @@
 	</div>
 
 	<div class="well">
-  		<p id="keyInstructions" class="text-center animated-bg">Please select the correct answer to the question.</p>
+  		<p id="keyInstructions" class="text-center animated-bg">Please buy the ticket exactly like the one which will apear here.</p>
   		
   		<p class="text-right"><a class="btn btn-default" id="help-button" href="javascript:showHelp();" role="button">Help &raquo;</a></p>
 		<div class="progress">

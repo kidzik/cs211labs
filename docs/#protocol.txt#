@@ -1,0 +1,44 @@
+1. Train experiment
+
+2. STROOP effect
+Format of json input: list of
+{'user_id': 1,
+'user_profile': {
+  "colorblind": true
+},
+'data': [{
+  "ordinal": 2,
+  "correct": true,
+  "consistent": true,
+  "color_vis": 'blue',
+  "color_tex": 'red',
+  "outcome_corr": true,
+  "time": 240
+}]}
+
+Format of database entryy:
+- experiment in a row 1-5
+- correct / incorrect
+- consistent / inconsistent
+- text color
+- semantic color
+- errors / time
+Example: "2/correct/inconsistent/red/yellow/errors" -> 10
+
+3. Genealogy experiment
+Format of json input: list of
+{
+  "ordinal": 2,
+  "resp": true,
+  "outcome_corr": true,
+  "time": 240
+}
+
+Format:
+ - experiment in a row 0-7
+ - noresp / errors / time
+Example: "2/noresp" -> 0
+
+4. Dual experiment
+
+5. Fitts effect experiment
