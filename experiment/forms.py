@@ -11,11 +11,9 @@ DEVICE_CHOICES = (
 )
 
 class UserForm(ModelForm):
-    device = forms.ChoiceField(choices=DEVICE_CHOICES)
-
     class Meta:
         model = User
-        fields = ['session', 'device']
+        fields = ['session']
 
     # Choose only open session
     def __init__(self, *args, **kwargs):
