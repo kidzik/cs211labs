@@ -1,6 +1,6 @@
 // TODO 0: General parameters of this experiment (time for each task and pauses in between)
-task_time = 3; // time to do each task, in seconds
-pause_time = 3; // pause between each task, in seconds
+task_time = 5; // time to do each task, in seconds
+pause_time = 2; // pause between each task, in seconds
 
 // TODO 1: Define the user profile useful for this task (to be shown as a form in the intro)
 //User profile for the STROOP task
