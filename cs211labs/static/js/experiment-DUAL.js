@@ -1,5 +1,5 @@
 // TODO 0: General parameters of this experiment (time for each task and pauses in between)
-var task_time_sym = 40; // time to do each task, in seconds
+var task_time_sym = 3; // time to do each task, in seconds
 var task_time_ball = 40;
 var task_time_dual = 40;
 
@@ -20,6 +20,9 @@ var total_help_time = 0; //total time spent in help during this task
 
 var results_baseline_ball = [];
 var results_baseline_sym = [];
+
+var dual_minitask_completed_ball=false;//In dual mode, each minitask is actually the completion of two minitasks, the symmetry and the ball game
+var dual_minitask_completed_sym=false;//In dual mode, each minitask is actually the completion of two minitasks, the symmetry and the ball game
 
 
 // TODO 1: Define the user profile useful for this task (to be shown as a form in the intro)
@@ -129,7 +132,10 @@ var livingEnemies = [];
 
 function create () {
 
-    //game.physics.startSystem(Phaser.Physics.ARCADE);
+    game.physics.startSystem(Phaser.Physics.ARCADE);
+
+	game.stage.backgroundColor = '#ffffff';
+	game.world.setBounds(0, 0, 400, 600);
 
     //  Our bullet group
     bullets = game.add.group();
@@ -143,9 +149,10 @@ function create () {
 
 
     //  The hero!
-    player = game.add.sprite(400, 500, 'ship');
+    player = game.add.sprite(200, 500, 'ship');
     player.anchor.setTo(0.5, 0.5);
-    //game.physics.enable(player, Phaser.Physics.ARCADE);
+    game.physics.enable(player, Phaser.Physics.ARCADE);
+    player.body.collideWorldBounds = true;
 
     //  The baddies!
     aliens = game.add.group();
@@ -162,19 +169,21 @@ function create () {
 
     //  And some controls to play the game with
     cursors = game.input.keyboard.createCursorKeys();
-    //TODO: This thing should be firing indefinitely... how?
+
     fireButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
 }
 
 function createBall () {
 
+	console.log("creating ball!");
+
 	//We randomly set where the ball will appear
-	var initialx = (Math.random()*400);
+	var initialx = game.rnd.integerInRange(1, 399);
 
     var alien = aliens.create(initialx, 50, 'invader');
     alien.anchor.setTo(0.5, 0.5);
-    //alien.body.moves = false;
+    alien.body.moves = false;
 
     aliens.x = initialx;
     aliens.y = 50;
@@ -199,7 +208,13 @@ function setupInvader (invader) {
 function touchGround() {
 
 	current_minitask_ball_success=false;
-    endMiniTask();
+
+
+    if(current_task==1) endMiniTask();
+    else if(current_task==2){
+   		dual_minitask_completed_ball=true;
+   		if(dual_minitask_completed_ball && dual_minitask_completed_sym) endMiniTask();//We only end the minitask once the two halves are complete
+    } 
 
 }
 
@@ -242,7 +257,11 @@ function collisionHandler (bullet, alien) {
     current_minitask_ball_success=true;
 
     //  End the task
-    endMiniTask();
+    if(current_task==1) endMiniTask();
+    else if(current_task==2){
+   		dual_minitask_completed_ball=true;
+   		if(dual_minitask_completed_ball && dual_minitask_completed_sym) endMiniTask();//We only end the minitask once the two halves are complete
+    } 
     
 
 }
@@ -275,15 +294,20 @@ function resetBullet (bullet) {
 
 function restart () {
 
-    //  A new task starts
-    
+	console.log("restarting game!");
+
+	//bullets.removeAll();
+	if(bullets) bullets.callAll('kill');
+    if(aliens) aliens.removeAll();
+
     //  And brings the aliens back from the dead :)
-    aliens.removeAll();
     createBall();
 
     //revives the player
-    player.revive();
-
+	if(player){
+		player.kill();
+    	player.revive();
+	} 
 }
 
 // TODO 5: Define the startTask() function with whatever happens at the beginning of each task (show stimuli, countdown timers, initialize task timestamps)
@@ -370,12 +394,12 @@ function startTask(){
 				onExpiry: null
 			});
 		$('#clocktask').countdown({
-				until: '+'+task_time_sym+'s', 
+				until: '+'+task_time_ball+'s', 
 		    	layout: '<span class="huge">{mn}</span>m <span class="huge">{sn}</span>s',
 		    	onExpiry: endTask 
 		    }); //We initialize the clock
 		$('#clocktask').countdown('option',{
-				until: '+'+task_time_sym+'s', 
+				until: '+'+task_time_ball+'s', 
 		    	layout: '<span class="huge">{mn}</span>m <span class="huge">{sn}</span>s',
 		    	onExpiry: endTask 
 		    });// In case the clock was already initialized, we restart it
@@ -415,12 +439,12 @@ function startTask(){
 				onExpiry: null
 			});
 		$('#clocktask').countdown({
-				until: '+'+task_time_sym+'s', 
+				until: '+'+task_time_dual+'s', 
 		    	layout: '<span class="huge">{mn}</span>m <span class="huge">{sn}</span>s',
 		    	onExpiry: endTask 
 		    }); //We initialize the clock
 		$('#clocktask').countdown('option',{
-				until: '+'+task_time_sym+'s', 
+				until: '+'+task_time_dual+'s', 
 		    	layout: '<span class="huge">{mn}</span>m <span class="huge">{sn}</span>s',
 		    	onExpiry: endTask 
 		    });// In case the clock was already initialized, we restart it
@@ -443,6 +467,11 @@ function startMiniTask(){
 
 	console.log("starting minitask "+current_minitask);
 
+	//We reset the counter for the halves of the dual task
+	if(current_task==2){
+		dual_minitask_completed_ball=false;
+		dual_minitask_completed_sym=false;
+	} 
 
 	if(current_task==0 || current_task==2){//If we are in the symmetry baseline or the dual task
 		//We show the corresponding shapes on the sides
@@ -454,45 +483,57 @@ function startMiniTask(){
 		}
 	}
 
+	if((current_task==1 || current_task==2) && current_minitask!=0){//If we are in the game baseline or the dual task, and not on the first minitask
+		//Restart the game
+		restart();
+	}
 
 
 
-		//We generate the response buttons and their behavior
-		var buttons="";
-		if(tasks_sym[current_minitask].symmetrical){//The shapes are symmetric, so the good response is Y
-			buttons += 	'&nbsp;<button type="button" class="btn btn-default btn-lg correct-btn">Yes</button>';
-			buttons += 	'&nbsp;<button type="button" class="btn btn-default btn-lg incorrect-btn">No</button>';
-		} else {//button for N is the correct solution
-			buttons += 	'&nbsp;<button type="button" class="btn btn-default btn-lg incorrect-btn">Yes</button>';
-			buttons += 	'&nbsp;<button type="button" class="btn btn-default btn-lg correct-btn">No</button>';
+
+		if(current_task!=1){ //We do not show the buttons or the minitask counter for the ball baseline - it is the ball falling down that decides
+
+			//We generate the response buttons and their behavior
+			var buttons="";
+			if(tasks_sym[current_minitask].symmetrical){//The shapes are symmetric, so the good response is Y
+				buttons += 	'&nbsp;<button type="button" class="btn btn-default btn-lg correct-btn">Yes</button>';
+				buttons += 	'&nbsp;<button type="button" class="btn btn-default btn-lg incorrect-btn">No</button>';
+			} else {//button for N is the correct solution
+				buttons += 	'&nbsp;<button type="button" class="btn btn-default btn-lg incorrect-btn">Yes</button>';
+				buttons += 	'&nbsp;<button type="button" class="btn btn-default btn-lg correct-btn">No</button>';
+			}
+			buttons += 	'&nbsp;<button type="button" class="btn btn-default btn-lg incorrect-btn">I don\'t know!</button>';
+			$("#stimulus-buttons").html(buttons);
+			$('.correct-btn').on('click', function () {
+		    	if(on_task && !on_modal && current_minitask<num_minitasks){
+		    		correct();
+		    	}
+		  	})
+			$('.incorrect-btn').on('click', function () {
+		    	if(on_task && !on_modal && current_minitask<num_minitasks){
+		    		incorrect();
+		    	}
+		  	})
+			$("#stimulus-buttons").show();
+
+
+			//We start and display the minitask countdown
+			$('#clockminitask').show();
+			$('#clockminitask').countdown({
+					until: '+'+minitask_time_sym+'s', 
+			    	layout: '<span class="huge">{sn}</span>s',
+			    	onExpiry: incorrect 
+			    }); //We initialize the clock
+			$('#clockminitask').countdown('option',{
+					until: '+'+minitask_time_sym+'s', 
+			    	layout: '<span class="huge">{sn}</span>s',
+			    	onExpiry: incorrect 
+			    });// In case the clock was already initialized, we restart it
+		
+		}else{
+			$("#stimulus-buttons").hide();
+			$('#clockminitask').hide();
 		}
-		buttons += 	'&nbsp;<button type="button" class="btn btn-default btn-lg incorrect-btn">I don\'t know!</button>';
-		$("#stimulus-buttons").html(buttons);
-		$('.correct-btn').on('click', function () {
-	    	if(on_task && !on_modal && current_minitask<num_minitasks){
-	    		correct();
-	    	}
-	  	})
-		$('.incorrect-btn').on('click', function () {
-	    	if(on_task && !on_modal && current_minitask<num_minitasks){
-	    		incorrect();
-	    	}
-	  	})
-		$("#stimulus-buttons").show();
-
-
-		//We start and display the minitask countdown
-		$('#clockminitask').show();
-		$('#clockminitask').countdown({
-				until: '+'+minitask_time_sym+'s', 
-		    	layout: '<span class="huge">{sn}</span>s',
-		    	onExpiry: incorrect 
-		    }); //We initialize the clock
-		$('#clockminitask').countdown('option',{
-				until: '+'+minitask_time_sym+'s', 
-		    	layout: '<span class="huge">{sn}</span>s',
-		    	onExpiry: incorrect 
-		    });// In case the clock was already initialized, we restart it
 
 		//We reset the help time counters as well
 		help_timestamp = 0; //moment in which we accessed the help
@@ -525,7 +566,12 @@ function correct(){
 	    		var time = (new Date()).getTime();
 	    		current_minitask_elapsed_time_sym = time - current_minitask_timestamp;
 
-	    		endMiniTask();
+
+    if(current_task==0) endMiniTask();
+    else if(current_task==2){
+   		dual_minitask_completed_sym=true;
+   		if(dual_minitask_completed_sym && dual_minitask_completed_ball) endMiniTask();//We only end the minitask once the two halves are complete
+    } 
 }
 
 function incorrect(){
@@ -534,7 +580,12 @@ function incorrect(){
 	    		var time = (new Date()).getTime();
 	    		current_minitask_elapsed_time_sym = time - current_minitask_timestamp;
 
-	    		endMiniTask();
+    if(current_task==0) endMiniTask();
+    else if(current_task==2){
+   		dual_minitask_completed_sym=true;
+   		if(dual_minitask_completed_sym && dual_minitask_completed_ball) endMiniTask();//We only end the minitask once the two halves are complete
+    } 
+
 }
 
 
@@ -547,10 +598,6 @@ function endMiniTask(){
 	});
 
 
-	if(current_task==1 || current_task==2){//If we are in the ball baseline or the dual task
-		//We reset the ball game
-		restart();
-	}
 
 	if(current_minitask<num_minitasks){// Just in case, it looks like this is called twice on ending
 		
