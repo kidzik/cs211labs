@@ -1,7 +1,7 @@
 // TODO 0: General parameters of this experiment (time for each task and pauses in between)
-var task_time_sym = 3; // time to do each task, in seconds
-var task_time_ball = 40;
-var task_time_dual = 40;
+var task_time_sym = 120; // time to do each task, in seconds
+var task_time_ball = 120;
+var task_time_dual = 120;
 
 var current_minitask=0;
 var minitask_time_sym=10; //Time to answer the minitask about symmetry
@@ -176,17 +176,18 @@ function create () {
 
 function createBall () {
 
-	console.log("creating ball!");
 
 	//We randomly set where the ball will appear
 	var initialx = game.rnd.integerInRange(1, 399);
+
+	console.log("creating ball at "+initialx+"!");
 
     var alien = aliens.create(initialx, 50, 'invader');
     alien.anchor.setTo(0.5, 0.5);
     alien.body.moves = false;
 
-    aliens.x = initialx;
-    aliens.y = 50;
+    aliens.x = 0;
+    aliens.y = 0;
 
     //  All this does is basically start the invaders moving. Notice we're moving the Group they belong to, rather than the invaders directly.
     var tween = game.add.tween(aliens).to( { y: 500 }, 10000/ball_speed, Phaser.Easing.Linear.None, true, 0, 0, false);
@@ -209,6 +210,8 @@ function touchGround() {
 
 	current_minitask_ball_success=false;
 
+	var time = (new Date()).getTime();
+	current_minitask_elapsed_time_ball = time - current_minitask_timestamp;
 
     if(current_task==1) endMiniTask();
     else if(current_task==2){
@@ -255,6 +258,10 @@ function collisionHandler (bullet, alien) {
     explosion.play('kaboom', 30, false, true);
 
     current_minitask_ball_success=true;
+
+	var time = (new Date()).getTime();
+	current_minitask_elapsed_time_ball = time - current_minitask_timestamp;
+
 
     //  End the task
     if(current_task==1) endMiniTask();
