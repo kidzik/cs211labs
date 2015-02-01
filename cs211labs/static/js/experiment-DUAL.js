@@ -189,11 +189,13 @@ function createBall () {
     aliens.x = 0;
     aliens.y = 0;
 
-    //  All this does is basically start the invaders moving. Notice we're moving the Group they belong to, rather than the invaders directly.
-    var tween = game.add.tween(aliens).to( { y: 500 }, 10000/ball_speed, Phaser.Easing.Linear.None, true, 0, 0, false);
+    console.log("adding new tween to "+game.tweens.getAll().length);
 
+    //  All this does is basically start the invaders moving. Notice we're moving the Group they belong to, rather than the invaders directly.
+    var tween = game.add.tween(aliens).to( { y: 500 }, 10000, Phaser.Easing.Linear.None, true, 0, 0, false);
+    tween.timeScale = (9+ball_speed)/10; //Speed of the ball movement, constant in the baseline, can be increased if needed
     //  When the tween loops it calls descend
-    tween.onLoop.add(touchGround, this);
+    tween.onComplete.add(touchGround, this);
 }
 
 function setupInvader (invader) {
@@ -207,6 +209,8 @@ function setupInvader (invader) {
 
 
 function touchGround() {
+
+	console.log("touching ground!");
 
 	current_minitask_ball_success=false;
 
@@ -302,6 +306,8 @@ function resetBullet (bullet) {
 function restart () {
 
 	console.log("restarting game!");
+
+	game.tweens.removeAll();
 
 	//bullets.removeAll();
 	if(bullets) bullets.callAll('kill');
