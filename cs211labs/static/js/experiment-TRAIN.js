@@ -1,6 +1,6 @@
 // TODO 0: General parameters of this experiment (time for each task and pauses in between)
 task_time = 60; // time to do each task, in seconds
-pause_time = 5; // pause between each task, in seconds
+pause_time = 2; // pause between each task, in seconds
 
 
 // TODO 1: Define the user profile useful for this task (to be shown as a form in the intro)
@@ -19,11 +19,11 @@ num_tasks = 15;
 //These are the sets of logical elements
 var cities = ["Geneve", "Lausanne", "Zurich", "Fribourg", "Basel", "Neuchatel", "Davos"]
 
-var fares = ["standard", "young", "half-fare"]
+var fares = ["standard"] //, "young", "half-fare"]
 var travel = ["one-way", "return"]
 var bike = ["yes", "no"]
 
-var interfaces = ["command", "graphical", "form"]
+var interfaces = ["command"] //, "graphical", "form"]
 
 function generate_ticket(){
     var nfare = Math.floor(Math.random() * fares.length); 
