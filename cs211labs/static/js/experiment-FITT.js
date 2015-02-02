@@ -170,7 +170,7 @@ function endTask(){
 	//console.log('trying to update progress bar to '+progress);
 	$('#taskProgress').attr("aria-valuenow",progress);
 	$('#taskProgress').attr("style", "width: "+progress+"%");
-	$('#taskProgress').html(progress+" % done");
+	//$('#taskProgress').html(progress+" % done");
 
 
 	on_task = false;
@@ -183,7 +183,7 @@ function endTask(){
 	//console.log('trying to update progress bar to '+progress);
 	$('#taskProgress').attr("aria-valuenow",progress);
 	$('#taskProgress').attr("style", "width: "+progress+"%");
-	$('#taskProgress').html(progress+" % done");
+	//$('#taskProgress').html(progress+" % done");
 
 	finishExperiment();
     }

@@ -34,6 +34,16 @@
 
 
 {% block experiment-content %}
+
+	<div class="well">
+  		<div id="keyInstructions" class="text-center animated-bg">Please use the Y/N to answer the symmetry question, and cursor keys to destroy the ball (or use the buttons).</div>
+  		
+  		<div class="help-button-well text-right"><a class="btn btn-default" href="javascript:showHelp();" role="button">Help &raquo;</a></div>
+		<div class="progress">
+        	<div id="taskProgress" class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"><!--0% done--></div>
+      	</div>
+  	</div>
+
 	<div id="mainDisplay">
 
 
@@ -60,14 +70,7 @@
 	  </div>
 	</div>
 
-	<div class="well">
-  		<p id="keyInstructions" class="text-center animated-bg">Please use the Y/N to answer the symmetry question, and cursor keys to destroy the ball (or use the buttons).</p>
-  		
-  		<p class="text-right"><a class="btn btn-default" href="javascript:showHelp();" role="button">Help &raquo;</a></p>
-		<div class="progress">
-        	<div id="taskProgress" class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">0% done</div>
-      	</div>
-  	</div>
+
 {% endblock %}
 
 
