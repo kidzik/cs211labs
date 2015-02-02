@@ -23,7 +23,7 @@ var fares = ["standard", "young", "half-fare"]
 var travel = ["one-way", "return"]
 var bike = ["yes", "no"]
 
-var interfaces = ["dragdrop", "graphical", "form"]
+var interfaces = ["command", "graphical", "form"]
 
 function generate_ticket(){
     var nfare = Math.floor(Math.random() * fares.length); 
