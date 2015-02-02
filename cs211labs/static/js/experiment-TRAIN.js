@@ -19,11 +19,11 @@ num_tasks = 15;
 //These are the sets of logical elements
 var cities = ["Geneve", "Lausanne", "Zurich", "Fribourg", "Basel", "Neuchatel", "Davos"]
 
-var fares = ["standard"] //, "young", "half-fare"]
+var fares = ["standard", "young", "half-fare"]
 var travel = ["one-way", "return"]
 var bike = ["yes", "no"]
 
-var interfaces = ["command"] //, "graphical", "form"]
+var interfaces = ["dragdrop", "graphical", "form"]
 
 function generate_ticket(){
     var nfare = Math.floor(Math.random() * fares.length); 
