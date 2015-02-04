@@ -150,6 +150,16 @@ function shuffle(array) {
   return array;
 }
 
+//Simple function to clone JS objects (so that we do not pass them by reference, as default)
+function clone(obj) {
+    if (null == obj || "object" != typeof obj) return obj;
+    var copy = obj.constructor();
+    for (var attr in obj) {
+        if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
+    }
+    return copy;
+}
+
 
 // Date formatting function
 function formatDate(date, format, utc) {

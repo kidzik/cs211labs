@@ -1,6 +1,6 @@
 // TODO 0: General parameters of this experiment (time for each task and pauses in between)
 task_time = 30; // time to do each task, in seconds
-pause_time = 5; // pause between each task, in seconds
+pause_time = 2; // pause between each task, in seconds
 
 
 // TODO 1: Define the user profile useful for this task (to be shown as a form in the intro)
@@ -14,13 +14,122 @@ user_profile = {
 //These are the sets of logical elements
 var phrases = [
 {
-	statements: "Bill is the brother of Mitch<br/>Mike is the father of Mitch<br/>Nathalie is the daughter of Bill", 
-	question: "Who is the grand-father of Nathalie?", 
+	statements: "$d is the son of $a<br/>$a is the father of $b<br/>$a is the brother of $c", 
+	subjects: ["$a", "$b", "$c", "$d"],
+	sex: ["m", "f", "m", "m"],
+	question: "Who is the uncle of $b?", 
 	num_elements: 3, 
-	options: ["Bill","Mitch","Mike"], 
-	solution: "Mike"
+	options: ["$a","$c","$d"], 
+	solution: "$c"
+},
+{
+	statements: "$c is the mother of $d<br/>$a is the father of $b<br/>$e is the brother of $d<br/>$b is the brother of $c", 
+	subjects: ["$a", "$b", "$c", "$d", "$e"],
+	sex: ["m", "f", "f", "m", "m"],
+	question: "Who is the grandfather of $e?", 
+	num_elements: 4, 
+	options: ["$a","$d","$e"], 
+	solution: "$a"
+},
+{
+	statements: "$a is the mother of $b<br/>$b is the sister of $d<br/>$d is the mother of $e<br/>$e is the brother of $f<br/>$c is the son of $b", 
+	subjects: ["$a", "$b", "$c", "$d", "$e", "$f"],
+	sex: ["f", "f", "m", "f", "m", "f"],
+	question: "Who is the aunt of $f?", 
+	num_elements: 5, 
+	options: ["$a","$b","$d"], 
+	solution: "$b"
+},
+{
+	statements: "$b is the daughter of $a<br/>$c is the brother of $b<br/>$c is the husband of $d<br/>$e is the son of $d<br/>$b is the mother of $f<br/>$f is the brother of $g", 
+	subjects: ["$a", "$b", "$c", "$d", "$e", "$f", "$g"],
+	sex: ["m", "f", "m", "f", "m", "m", "m"],
+	question: "Who is the grandfather of $e?", 
+	num_elements: 6, 
+	options: ["$a","$c","$f"], 
+	solution: "$a"
+},
+{
+	statements: "$e is the son of $d<br/>$b is the daughter of $a<br/>$c is the brother of $b<br/>$c is the husband of $d<br/>$h is the brother of $b<br/>$f is the brother of $g<br/>$b is the mother of $f", 
+	subjects: ["$a", "$b", "$c", "$d", "$e", "$f", "$g", "$h"],
+	sex: ["m", "f", "m", "f", "m", "m", "f", "m"],
+	question: "Who is the uncle of $e?", 
+	num_elements: 7, 
+	options: ["$a","$e","$h"], 
+	solution: "$h"
+},
+{
+	statements: "$c is the husband of $d<br/>$e is the son of $d<br/>$c is the brother of $b<br/>$b is the mother of $f<br/>$h is the brother of $b<br/>$f is the brother of $g<br/>$b is the daughter of $a<br/>$i is the son of $g", 
+	subjects: ["$a", "$b", "$c", "$d", "$e", "$f", "$g", "$h", "$i"],
+	sex: ["f", "f", "m", "f", "m", "m", "f", "m", "m"],
+	question: "Who is the grandson of $b?", 
+	num_elements: 8, 
+	options: ["$i","$c","$f"], 
+	solution: "$i"
+},
+{
+	statements: "$b is the daughter of $a<br/>$c is the husband of $d<br/>$e is the son of $d<br/>$c is the brother of $b<br/>$b is the mother of $f<br/>$i is the son of $g<br/>$j is the brother of $h<br/>$h is the brother of $b<br>$f is the brother of $g", 
+	subjects: ["$a", "$b", "$c", "$d", "$e", "$f", "$g", "$h", "$i", "$j"],
+	sex: ["f", "f", "m", "f", "m", "m", "f", "m", "m", "m"],
+	question: "Who is the aunt of $g?", 
+	num_elements: 9, 
+	options: ["$a","$d","$b"], 
+	solution: "$d"
+},
+{
+	statements: "$b is the mother of $f<br/>$i is the son of $g<br/>$j is the brother of $h<br/>$b is the daughter of $a<br/>$c is the husband of $d<br/>$k is the wife of $a<br/>$e is the son of $d<br/>$c is the brother of $b<br>$h is the brother of $b<br/>$f is the brother of $g", 
+	subjects: ["$a", "$b", "$c", "$d", "$e", "$f", "$g", "$h", "$i", "$j", "$k"],
+	sex: ["f", "f", "m", "f", "m", "m", "m", "f", "m", "m", "f"],
+	question: "Who is the mother of $h?", 
+	num_elements: 10, 
+	options: ["$b","$d","$k"], 
+	solution: "$k"
 }
 ];
+
+var female_names = [ "Anna",
+	"Beverly",
+	"Cynthia",
+	"Dorothy",
+	"Elenna",
+	"Fatimah",
+	"Grace",
+	"Iris",
+	"Jennifer",
+	"Kate",
+	"Laura",
+	"Mary",
+	"Nelly",
+	"Petra",
+	"Rose",
+	"Susan",
+	"Tania",
+	"Vivian",
+	"Wendy",
+	"Yasmine"
+];
+var male_names = ["Albert",
+	"Bob",
+	"Charles",
+	"Donald",
+	"Emett",
+	"Ferdinand",
+	"Gary",
+	"Harold",
+	"Jerry",
+	"Kevin",
+	"Liam",
+	"Manuel",
+	"Nestor",
+	"Paul",
+	"Richard",
+	"Simon",
+	"Tom",
+	"Victor",
+	"Walter",
+	"Zed"
+];
+
 
 // TODO 3: Define the number of tasks that will make up the workflow of the experiment for one subject
 num_tasks = phrases.length;
@@ -28,18 +137,51 @@ num_tasks = phrases.length;
 // TODO 4: Define the init-specific() function with 
 function init_specific(){
 
-	//We do the initial shuffle of the phrases
-	shuffle(phrases);
-
 	//Just in case, we hide the stimulus and buttons
 	$("#stimulus").hide();
 	$("#stimulus-buttons").hide();
 
 }
 
+function generateNameMapping(phrase){
+
+	var males = clone(shuffle(male_names));//We randomize the order of appearance of names
+	var females = clone(shuffle(female_names));
+	var mapnames = {};
+	for (var i=0; i<phrase.subjects.length;i++){
+		if(phrase.sex[i]=="m"){ //if this subject is a male, we take the name from the male names
+			mapnames[phrase.subjects[i]] = males.pop();
+		} else {
+			mapnames[phrase.subjects[i]] = females.pop();
+		}
+
+	}
+	//Now we have the name mappings, which we will use to substitute in different parts of the interface...
+	return mapnames;	
+}
+
+function doNameSubstitution(string, mapping){
+
+	var newString = string;
+	//console.log("substituting "+string);
+	for(var i in mapping){//For each name in our mapping, we iterate over the keys
+		//console.log(i+" "+mapping[i]);
+		var re = new RegExp("\\"+i, 'g');
+		newString = newString.replace(re,mapping[i]);
+	}
+	return newString;
+}
 
 // TODO 5: Define the startTask() function with whatever happens at the beginning of each task (show stimuli, countdown timers, initialize task timestamps)
 function startTask(){
+
+
+	var phrase = phrases[current_task];
+	var mapnames = generateNameMapping(phrase);
+
+	var stimulus = doNameSubstitution(phrase.statements, mapnames);
+	var question = doNameSubstitution(phrase.question, mapnames);
+
 	// This part shoud
 	current_task_success=false;//we reset the success of the task to false
 	current_task_elapsed_time = task_time*1000; //we reset the time taken to solve the puzzle
@@ -49,16 +191,16 @@ function startTask(){
 	//Experiment-specific stuff
 	//We display the phrases and the question
 	$("#pauseStimulus").hide();
-	$("#stimulus").html( phrases[current_task].statements + "<br/><strong>" + phrases[current_task].question + "</strong>" );
+	$("#stimulus").html( stimulus + "<br/><strong>" + question + "</strong>" );
 	$("#stimulus").show();
 
 	//We generate the response buttons and their behavior
 	var buttons="";
-	for (i = 0; i<phrases[current_task].options.length; i++){
-		if(phrases[current_task].options[i]==phrases[current_task].solution){//button for the correct solution
-			buttons += 	'&nbsp;<button type="button" class="btn btn-default btn-lg correct-btn">'+phrases[current_task].options[i]+'</button>';
+	for (i = 0; i<phrase.options.length; i++){
+		if(phrase.options[i]==phrase.solution){//button for the correct solution
+			buttons += 	'&nbsp;<button type="button" class="btn btn-default btn-lg correct-btn">'+doNameSubstitution(phrase.options[i],mapnames)+'</button>';
 		} else {//button for an incorrect solution
-			buttons += 	'&nbsp;<button type="button" class="btn btn-default btn-lg incorrect-btn">'+phrases[current_task].options[i]+'</button>';
+			buttons += 	'&nbsp;<button type="button" class="btn btn-default btn-lg incorrect-btn">'+doNameSubstitution(phrase.options[i],mapnames)+'</button>';
 		}
 	}
 	buttons += 	'&nbsp;<button type="button" class="btn btn-default btn-lg incorrect-btn">I don\'t know!</button>';

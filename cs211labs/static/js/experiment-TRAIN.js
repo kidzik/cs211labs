@@ -73,7 +73,7 @@ function get_command_for_ticket(ticket){
 
 // TODO 4: Define the init-specific() function with 
 function init_specific(){
-    shuffle(interfaces);
+    interfaces = shuffle(interfaces);
 
     //Just in case, we hide the stimulus and buttons
     $("#stimulus").hide();

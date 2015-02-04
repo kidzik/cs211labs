@@ -45,7 +45,7 @@ num_tasks = phrases.length;
 function init_specific(){
 
 	//We do the initial shuffle of the phrases
-	shuffle(phrases);
+	phrases = shuffle(phrases);
 
 	//We add the behavior to capture keypresses
 	$(document).keypress(function(e){
