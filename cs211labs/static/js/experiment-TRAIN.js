@@ -12,7 +12,7 @@ user_profile = {
 var help_hits;
 
 // TODO 3: Define the number of tasks that will make up the workflow of the experiment for one subject
-num_tasks = 15;
+num_tasks = 20;
 
 // TODO 2: Define any experiment-specific data structures
 //Data for the GENEALOGY task
@@ -23,7 +23,7 @@ var fares = ["standard", "young", "half-fare"]
 var travel = ["one-way", "return"]
 var bike = ["yes", "no"]
 
-var interfaces = ["command", "graphical", "form"]
+var interfaces = ["dragdrop", "command", "graphical", "form"]
 
 function generate_ticket(){
     var nfare = Math.floor(Math.random() * fares.length); 
@@ -79,7 +79,7 @@ function init_specific(){
     $("#stimulus").hide();
     $("#stimulus-buttons").hide();
 
-    $("#help-button").click(function(){
+    $(".help-button").click(function(){
 	help_hits++;
     });
 }
