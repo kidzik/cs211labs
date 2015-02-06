@@ -74,8 +74,10 @@ function generate_figure(complexity)
   return normalise_figure(figure)
 }
 
-// symmetry
-// with a mistake complexity given by 
+// symmetry of a figure
+// returns the exact symmetry if exact = true
+// otherwise the difficulty of distinguishing the change
+// is given by difficulty parameter
 function mirror_figure(figure, exact, difficulty)
 {
   var ret = []
@@ -108,7 +110,7 @@ function mirror_figure(figure, exact, difficulty)
   return normalise_figure(ret)
 }
 
-// draws a given set of pointsr
+// draws a given figure on canvas div
 function draw_figure(canvas, figure)
 {
   var c2 = canvas.getContext('2d');
@@ -144,7 +146,7 @@ function draw_figure(canvas, figure)
 var canvas_left = $("#canvas_left")[0];
 var canvas_right = $("#canvas_right")[0];
 
-var f = generate_figure(0);
+var f = generate_figure(0.5);
 draw_figure(canvas_left, f);
 draw_figure(canvas_right, mirror_figure(f, false, 1));
 </script>
