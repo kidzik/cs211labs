@@ -50,13 +50,13 @@ class ExperimentProcessor(object):
     # Since keys are in the format v1/v2/v3/v4/v5/...
     # we take all results which fit */*/level[0]/*/*
     # into group 0, then all */*/level[1]/*/* to group 1 etc
-    def get_data(self, results, var, nvars, dep, levels):
+    def get_data(self, results, var, nvars, dep, levels, scaling = 1):
         exps = self.gen_reg_exp(nvars, dep, levels)
         data = []
         print exps
         for key, val in exps.iteritems():
             res = results.filter(key__iregex=r'^' + val + '/' + var + '$')
-            v = self.mean_values(res)
+            v = self.mean_values(res) * scaling
             data.append([key, v])
         return data
 

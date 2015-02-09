@@ -1,7 +1,7 @@
 // TODO 0: General parameters of this experiment (time for each task and pauses in between)
 task_time = 30; // time to do each task, in seconds
 pause_time = 2; // pause between each task, in seconds
-
+var cur_task_resp = false; // was the last question responded
 
 // TODO 1: Define the user profile useful for this task (to be shown as a form in the intro)
 //User profile for the STROOP task
@@ -186,7 +186,8 @@ function startTask(){
 	current_task_success=false;//we reset the success of the task to false
 	current_task_elapsed_time = task_time*1000; //we reset the time taken to solve the puzzle
 	help_timestamp = 0;
-	total_help_time = 0;
+        total_help_time = 0;
+        cur_task_resp = false;
 
 	//Experiment-specific stuff
 	//We display the phrases and the question
@@ -272,6 +273,7 @@ function endTask(){
 		  "ordinal": current_task,
 		  "num_elements": phrases[current_task].num_elements,
 		  "outcome_corr": current_task_success,
+                  "resp": cur_task_resp,
 		  "time": (current_task_elapsed_time - total_help_time)
 		};
 		results.push(result);

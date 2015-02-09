@@ -32,16 +32,19 @@ class ExperimentTrainProcessor(ExperimentProcessor):
         super(ExperimentTrainProcessor, self).process_results(results)
         processed = []
 
-        data = self.get_data(results, "errors", 2, 0, range(4))
+        data = self.get_data(results, "errors", 2, 0, range(5))
         data.sort()
-        processed.append({'data': [["time","value"],] + data, 'title': "Mean errors per try", 'var': "Mean errors", 'type': 'line'})
 
-        data = self.get_data(results, "time", 2, 0, range(4))
+        header = [[{'id': "time", 'label': "time", 'type': "number"},{'id': "value", 'label': "value", 'type': "number"}],]
+
+        processed.append({'data': header + data, 'title': "Mean errors per try", 'var': "Mean errors", 'type': 'line'})
+
+        data = self.get_data(results, "time", 2, 0, range(5), scaling = 0.001)
         data.sort()
-        processed.append({'data': [["time","value"],] + data, 'title': "Mean time per try", 'var': "Mean time", 'type': 'line'})
+        processed.append({'data': header + data, 'title': "Mean time per try", 'var': "Mean time", 'type': 'line'})
 
 
-        processed.append({'data': self.get_data(results, "time", 2, 1, ["command", "graphical", "form", "dragdrop"]), 'title': "Mean time per interface", 'var': "Mean time", 'type': 'barplot'})
+        processed.append({'data': self.get_data(results, "time", 2, 1, ["command", "graphical", "form", "dragdrop"], scaling = 0.001), 'title': "Mean time per interface", 'var': "Mean time", 'type': 'barplot'})
 
         processed.append({'data': self.get_data(results, "errors", 2, 1, ["command", "graphical", "form", "dragdrop"]), 'title': "Mean errors per interface", 'var': "Mean errors", 'type': 'barplot'})
 
