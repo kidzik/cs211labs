@@ -37,31 +37,15 @@ user_profile = {
 // TODO 2: Define any experiment-specific data structures
 //Data for the DUAL task
 //These are the sets of shapes
-var tasks_sym_constant = [
-{
-	image1: "1a.jpg", 
-	image2: "1b.jpg", 
+var canvas_left = $("#canvas_left")[0];
+var canvas_right = $("#canvas_right")[0];
+
+//This stores the properties of the current pair of shapes
+var current_fig = {
+	complexity: 0.5, //Complexity of shape
+	complexity_diff: 0.5, //Complexity of differentiation
 	symmetrical: false 
-}
-];
-
-var tasks_sym_increasing = [
-{
-	image1: "1a.jpg", 
-	image2: "1b.jpg", 
-	symmetrical: false 
-}
-];
-
-//FIXME: For now, I just create two sets with 200 identical elements, untill we have the real shape data
-for (i=0;i<200;i++){
-	tasks_sym_constant.push(tasks_sym_constant[0]);
-	tasks_sym_increasing.push(tasks_sym_increasing[0]);
-}
-
-
-var tasks_sym = tasks_sym_constant; //For the initial baseline test, the difficulty will not increase
-var num_minitasks = tasks_sym.length;
+};
 
 var ball_speed = 1; //speed at which the ball falls
 
@@ -86,7 +70,7 @@ function init_specific(){
 
 	//We add the behavior to capture keypresses
 	$(document).keypress(function(e){
-		if(on_task && !on_modal && current_minitask<num_minitasks){
+		if(on_task && !on_modal){
 	    	if(e.which == 89 || e.which == 121){// pressed y
 
 	    		yes();
@@ -351,12 +335,6 @@ function startTask(){
 		help_timestamp = 0; //moment in which we accessed the help
 		total_help_time = 0; //total time spent in help during this task
 
-		//Depending on the condition, assign the right set of symmetry tasks to tasks_sym
-		if(user_profile.condition=="A") tasks_sym = tasks_sym_constant;
-		else tasks_sym = tasks_sym_increasing;
-
-
-
 		//We start and display the task countdown
 		$('#initialMessage').hide();
 		$('#clocktask').show();
@@ -440,10 +418,6 @@ function startTask(){
 		help_timestamp = 0; //moment in which we accessed the help
 		total_help_time = 0; //total time spent in help during this task
 
-		//Depending on the condition, assign the right set of symmetry tasks to tasks_sym
-		if(user_profile.condition=="A") tasks_sym = tasks_sym_constant;
-		else tasks_sym = tasks_sym_increasing;
-
 		//We start and display the task countdown
 		$('#initialMessage').hide();
 		$('#clocktask').show();
@@ -486,14 +460,27 @@ function startMiniTask(){
 		dual_minitask_completed_sym=false;
 	} 
 
-	if(current_task==0 || current_task==2){//If we are in the symmetry baseline or the dual task
-		//We show the corresponding shapes on the sides
-		if(tasks_sym[current_minitask]){ //If we have enough shape tasks to show yet
-			$("#shape-left").html("<img id='image1' src='/static/img/"+tasks_sym[current_minitask].image1+"'/>");			
-			$("#shape-right").html("<img id='image2' src='/static/img/"+tasks_sym[current_minitask].image2+"'/>");
-			$("#shape-left").show();
-			$("#shape-right").show();	
+	if(current_task==0){//If we are in the symmetry baseline
+		//We generate randomly and show the corresponding shapes on the sides
+		current_fig.complexity = 0.1;
+		current_fig.complexity_diff = 0.1;
+		current_fig.symmetrical = randomBoolean();
+		drawFigures(current_fig);
+	} else if(current_task==2){//If we are on the dual task
+		//We generate and show the corresponding shapes on the sides
+		var complex = 0.1;
+		if(user_profile.condition=="B"){ //In case we are on the increasing symmetry condition
+			 complex = 0.1 + (0.03 * current_minitask);
+			 if(complex>1) complex=1;
 		}
+		current_fig.complexity = complex;
+		current_fig.complexity_diff = complex;
+		current_fig.symmetrical = randomBoolean();
+		drawFigures(current_fig);
+	}
+
+	if(current_task==2 && user_profile.condition=="A"){ //If we are in the increasing ball speed conditiion
+		ball_speed++;
 	}
 
 	if((current_task==1 || current_task==2) && current_minitask!=0){//If we are in the game baseline or the dual task, and not on the first minitask
@@ -508,7 +495,7 @@ function startMiniTask(){
 
 			//We generate the response buttons and their behavior
 			var buttons="";
-			if(tasks_sym[current_minitask].symmetrical){//The shapes are symmetric, so the good response is Y
+			if(current_fig.symmetrical){//The shapes are symmetric, so the good response is Y
 				buttons += 	'&nbsp;<button type="button" class="btn btn-default btn-lg correct-btn">Yes</button>';
 				buttons += 	'&nbsp;<button type="button" class="btn btn-default btn-lg incorrect-btn">No</button>';
 			} else {//button for N is the correct solution
@@ -518,12 +505,12 @@ function startMiniTask(){
 			buttons += 	'&nbsp;<button type="button" class="btn btn-default btn-lg incorrect-btn">I don\'t know!</button>';
 			$("#stimulus-buttons").html(buttons);
 			$('.correct-btn').on('click', function () {
-		    	if(on_task && !on_modal && current_minitask<num_minitasks){
+		    	if(on_task && !on_modal){
 		    		correct();
 		    	}
 		  	})
 			$('.incorrect-btn').on('click', function () {
-		    	if(on_task && !on_modal && current_minitask<num_minitasks){
+		    	if(on_task && !on_modal){
 		    		incorrect();
 		    	}
 		  	})
@@ -559,7 +546,7 @@ function startMiniTask(){
 
 function yes(){//A yes has been registered... is it correct?
 	if(current_task == 0 || current_task == 2){// This does not apply to the single task game task
-		if(tasks_sym[current_minitask].symmetrical) correct();
+		if(current_fig.symmetrical) correct();
 		else incorrect();
 	}
 
@@ -567,7 +554,7 @@ function yes(){//A yes has been registered... is it correct?
 
 function no(){//A yes has been registered... is it correct?
 	if(current_task == 0 || current_task == 2){// This does not apply to the single task game task
-		if(!tasks_sym[current_minitask].symmetrical) correct();
+		if(!current_fig.symmetrical) correct();
 		else incorrect();
 	}
 
@@ -612,51 +599,32 @@ function endMiniTask(){
 
 
 
-	if(current_minitask<num_minitasks){// Just in case, it looks like this is called twice on ending
-		
-		//This part is experiment-specific
-		//We decide if the task was correct?
-		console.log("ended minitask - correctly? ball "+current_minitask_ball_success + "  sym "+current_minitask_sym_success + "in ball " + (current_minitask_elapsed_time_ball - total_help_time) + " ms. sym " + (current_minitask_elapsed_time_sym - total_help_time) + " ms.");
-		//We send store the data locally to be sent at the end of the experiment
-		var result = {
-		  "ordinal": current_minitask,
-		  "outcome_ball_corr": current_minitask_ball_success,
-		  "time_ball": (current_minitask_elapsed_time_ball - total_help_time),
-		  "outcome_sym_corr": current_minitask_sym_success,
-		  "time_sym": (current_minitask_elapsed_time_sym - total_help_time),
-		};
+	//This part is experiment-specific
+	//We decide if the task was correct?
+	console.log("ended minitask - correctly? ball "+current_minitask_ball_success + "  sym "+current_minitask_sym_success + "in ball " + (current_minitask_elapsed_time_ball - total_help_time) + " ms. sym " + (current_minitask_elapsed_time_sym - total_help_time) + " ms.");
+	//We send store the data locally to be sent at the end of the experiment
+	var result = {
+	  "ordinal": current_minitask,
+	  "outcome_ball_corr": current_minitask_ball_success,
+	  "time_ball": (current_minitask_elapsed_time_ball - total_help_time),
+	  "outcome_sym_corr": current_minitask_sym_success,
+	  "time_sym": (current_minitask_elapsed_time_sym - total_help_time),
+	};
 
 
-		if(current_task==0){ // If we are in the symmetry baseline, we add it to another array of results, which will be used to calculate the baseline
-			results_baseline_sym.push(result);
-		} else if(current_task==1){ // If we are in the symmetry baseline, we add it to another array of results, which will be used to calculate the baseline
-			results_baseline_ball.push(result);
-		} else if(current_task==2){ // It is the dual task, we really add it to the results array
-			results.push(result);
-		}
-
-		//If we still have more minitasks of this kind (or it is the single ball task, which is technically unlimited)
-		if(current_task==1 || current_minitask<(tasks_sym.length-1)){
-
-			//Experiment-specific transition between task and pause (exchange stimuli)
-			current_minitask++;
-
-			//We reset the minitask
-			if(current_task==0){ // If we are in the symmetry baseline
-				startMiniTask();
-			} else if(current_task==1){ // If we are in the ball baseline
-				startMiniTask();
-			} else if(current_task==2){ // It is the dual task
-				startMiniTask();
-			}
-
-
-		} else {
-			current_minitask++;
-
-			endTask();
-		}
+	if(current_task==0){ // If we are in the symmetry baseline, we add it to another array of results, which will be used to calculate the baseline
+		results_baseline_sym.push(result);
+	} else if(current_task==1){ // If we are in the symmetry baseline, we add it to another array of results, which will be used to calculate the baseline
+		results_baseline_ball.push(result);
+	} else if(current_task==2){ // It is the dual task, we really add it to the results array
+		results.push(result);
 	}
+
+	//Experiment-specific transition between task and pause (exchange stimuli)
+	current_minitask++;
+
+	//We reset the minitask to the next one
+	startMiniTask();
 
 }
 
@@ -808,3 +776,159 @@ function storeProfile(){
 
 }
 
+
+
+//Figure-generation functions
+
+// normalises given set of points to [-1,1] bounds
+// on both dimensions
+function normalise_figure(figure)
+{
+  var maxX = 1;
+  var maxY = 1;
+  var minX = -1;
+  var minY = -1;
+
+  for (var i = 0; i < figure.length; i++){
+    if (figure[i].x < minX)
+      minX = figure[i].x;
+    if (figure[i].x > maxX)
+      maxX = figure[i].x;
+    if (figure[i].y < minY)
+      minY = figure[i].y;
+    if (figure[i].y > maxY)
+      maxY = figure[i].y;
+  }
+  minY = Math.abs(minY)
+  minX = Math.abs(minX)
+
+  for (var i = 0; i < figure.length; i++){
+    if (figure[i].x > 0)
+      figure[i].x /= maxX; 
+    if (figure[i].y > 0)
+      figure[i].y /= maxY; 
+
+    if (figure[i].x < 0)
+      figure[i].x /= minX; 
+    if (figure[i].y < 0)
+      figure[i].y /= minY; 
+  }
+  return figure;
+}
+
+// generate figure as a list of tuples (vertices)
+// complexity -> real number from 0-1
+function generate_figure(complexity)
+{
+  var figure = []
+  if (complexity < 0){
+    complextiy = 0;
+  }
+  if (complexity > 1){
+    complextiy = 1;
+  }
+  var sides = Math.floor(complexity * 20);
+  if (sides < 3)
+    sides = 3;
+
+  var points = []
+
+  for (var i = 0; i < sides; i++){
+    points.push(Math.random())
+  } 
+  points.sort()
+  console.log(sides)
+
+  for (var i = 0; i < sides; i++){
+    var p = {}
+    p.x = Math.cos(points[i]*2*Math.PI) + (Math.random() - 0.5) * complexity / 2.0
+    p.y = Math.sin(points[i]*2*Math.PI) + (Math.random() - 0.5) * complexity / 2.0
+    figure.push(p)
+  } 
+  return normalise_figure(figure)
+}
+
+// symmetry of a figure
+// returns the exact symmetry if exact = true
+// otherwise the difficulty of distinguishing the change
+// is given by difficulty parameter
+function mirror_figure(figure, exact, difficulty)
+{
+  var ret = []
+  for (var i = 0; i < figure.length; i++){
+    var v = {}
+    v.x = -figure[i].x
+    v.y = figure[i].y
+    ret.push(v)
+  }
+  if (exact)
+    return ret
+
+  var angle = 0; (1.1 - difficulty) * 0.1 * Math.PI;
+
+  for (var i = 0; i < figure.length; i++){
+    var x = ret[i].x * Math.cos(angle) - ret[i].y * Math.sin(angle)
+    var y = ret[i].x * Math.sin(angle) + ret[i].y * Math.cos(angle)
+    ret[i].x = x
+    ret[i].y = y
+  }
+
+  var p = Math.floor(Math.random() * figure.length); 
+
+  var v = Math.random()
+  var d = (1.1 - difficulty)
+  if (d > 0.3) d = 0.3
+  ret[p].x += (v) * d * 2
+  ret[p].y += (1 - v) * d * 2
+  console.log(p)
+  return normalise_figure(ret)
+}
+
+// draws a given figure on canvas div
+function draw_figure(canvas, figure)
+{
+  var c2 = canvas.getContext('2d');
+  c2.fillStyle = '#33CCFF';
+  c2.beginPath();
+  c2.lineWidth = 3;
+
+  var xoffset = canvas.width/2;
+  var yoffset = canvas.height/2;
+  c2.translate(xoffset,yoffset);
+
+
+  var scale = {}
+  scale.x = canvas.width/2 * 0.9
+  scale.y = canvas.height/2 * 0.9
+
+  var n = figure.length;
+  c2.moveTo(figure[n-1].x*scale.x, figure[n-1].y*scale.y);
+
+  for (var i = 0; i < n; i++){
+    c2.lineTo(figure[i].x*scale.x, figure[i].y*scale.y);
+  }
+  c2.closePath();
+  c2.fill();
+  c2.stroke();
+  c2.translate(-xoffset,-yoffset);
+}
+
+function clear_figure(canvas){
+	var c2 = canvas.getContext('2d');
+	c2.clearRect ( 0 , 0 , canvas.width, canvas.height );
+}
+
+//Just calls the two drawing functions, according to the figure properties passed
+function drawFigures(figureProps){
+	clear_figure(canvas_left);
+	clear_figure(canvas_right);
+	var f = generate_figure(figureProps.complexity);
+	draw_figure(canvas_left, f);
+	draw_figure(canvas_right, mirror_figure(f, figureProps.symmetrical, figureProps.complexity_diff));
+	$("#shape-left").show();
+	$("#shape-right").show();	
+}
+
+function randomBoolean(){
+        return Math.random()<.5; // Readable, succint
+    }
