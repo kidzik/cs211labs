@@ -68,7 +68,8 @@
       }
 
       function drawLinePlot(data, title) {
-        var dataTable = google.visualization.arrayToDataTable(data);
+        var dataTable = google.visualization.arrayToDataTable(data, false);
+
 
         var options = {
           'title': title,
@@ -94,7 +95,10 @@
       function drawBarPlot(data, title, variable) {
         // Create the data table.
         var dataTable = new google.visualization.DataTable();
-        dataTable.addColumn('string', 'Mode');
+        if (typeof data[0][0] == "string")
+          dataTable.addColumn('string', 'Mode');
+        else
+          dataTable.addColumn('number', 'Time');
         dataTable.addColumn('number', variable);
         dataTable.addRows(data);
 
