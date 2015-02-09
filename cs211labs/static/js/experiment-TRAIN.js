@@ -167,7 +167,7 @@ function endTask(){
     $("#interface").html("");
     $("#interface").hide();
 
-    $("#keyInstructions").html("Please buy the ticket exactly like the one which will apear here.");
+    $("#keyInstructions").html("Please buy the ticket exactly like the one which will appear here.");
 
 
     if(current_task<num_tasks){// Just in case, it looks like this is called twice on ending
