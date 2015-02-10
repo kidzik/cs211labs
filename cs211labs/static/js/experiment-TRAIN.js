@@ -93,14 +93,6 @@ function get_current_interface(){
 
 // TODO 5: Define the startTask() function with whatever happens at the beginning of each task (show stimuli, countdown timers, initialize task timestamps)
 function startTask(){
-    // This part shoud
-    current_task_success=false;//we reset the success of the task to false
-    current_task_elapsed_time = task_time*1000; //we reset the time taken to solve the puzzle
-    help_timestamp = 0;
-    total_help_time = 0;
-    help_hits = 0;
-    
-
         // This part shoud
         current_task_success=false;//we reset the success of the task to false
         current_task_elapsed_time = task_time*1000; //we reset the time taken to solve the puzzle
