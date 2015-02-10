@@ -10,6 +10,7 @@ user_profile = {
 };
 
 var help_hits;
+var first_interface_intro=false;
 
 // TODO 3: Define the number of tasks that will make up the workflow of the experiment for one subject
 num_tasks = 20;
@@ -100,36 +101,54 @@ function startTask(){
     help_hits = 0;
     
 
-    //Experiment-specific stuff
-    //We display the phrases and the question
-    $("#pauseStimulus").hide();
+        // This part shoud
+        current_task_success=false;//we reset the success of the task to false
+        current_task_elapsed_time = task_time*1000; //we reset the time taken to solve the puzzle
+        help_timestamp = 0;
+        total_help_time = 0;
+        help_hits = 0;
+        
 
-    $("#interface").show();
-    $("#interface").load(STATIC_URL + "html/TRAIN-" + get_current_interface() + ".html");
-    $("#keyInstructions").html(get_command_for_ticket(tickets[current_task]));
+        //Experiment-specific stuff
+        //We display the phrases and the question
+        $("#pauseStimulus").hide();
 
-    //We start and display the task countdown
-    $('#initialMessage').hide();
-    $('#clocktask').show();
-    $('#clockpauses').hide();
-    $('#clockpauses').countdown('option',{
-	onExpiry: null
-    });
-    $('#clocktask').countdown({
-	until: '+'+task_time+'s', 
-	layout: '<span class="huge">{sn}</span>s',
-	onExpiry: endTask 
-    }); //We initialize the clock
-    $('#clocktask').countdown('option',{
-	until: '+'+task_time+'s', 
-	layout: '<span class="huge">{sn}</span>s',
-	onExpiry: endTask 
-    });// In case the clock was already initialized, we restart it
+        $("#interface").show();
+        $("#interface").load(STATIC_URL + "html/TRAIN-" + get_current_interface() + ".html");
+        $("#keyInstructions").html(get_command_for_ticket(tickets[current_task]));
+
+        //We start and display the task countdown
+        $('#initialMessage').hide();
+        $('#clocktask').show();
+        $('#clockpauses').hide();
+        $('#clockpauses').countdown('option',{
+        onExpiry: null
+        });
+        $('#clocktask').countdown({
+        until: '+'+task_time+'s', 
+        layout: '<span class="huge">{sn}</span>s',
+        onExpiry: endTask 
+        }); //We initialize the clock
+        $('#clocktask').countdown('option',{
+        until: '+'+task_time+'s', 
+        layout: '<span class="huge">{sn}</span>s',
+        onExpiry: endTask 
+        });// In case the clock was already initialized, we restart it
 
 
-    // This part should also be in all experiments, probably
-    current_task_timestamp = (new Date()).getTime();
-    on_task = true;
+        // This part should also be in all experiments, probably
+        current_task_timestamp = (new Date()).getTime();
+        on_task = true;
+
+    //Only at the beginning of the first task, we show the help for the first interface (in subsequent times, it will be done in endTask)
+    if(current_task==0 && !first_interface_intro){
+        //We check whether this is the first task of a new interface. If so, we show a modal window with the instructions for it
+        console.log("First task of interface "+get_current_interface());
+        pauseCounters();
+        showPartialModal(get_current_interface());
+        first_interface_intro=true;
+    } 
+
 }
 
 function interface_result(ticket){
@@ -168,7 +187,7 @@ function endTask(){
     $("#interface").html("");
     $("#interface").hide();
 
-    $("#keyInstructions").html("Please buy the ticket exactly like the one which will apear here.");
+    $("#keyInstructions").html("Please buy the ticket with the options that will appear here.");
 
 
     if(current_task<num_tasks){// Just in case, it looks like this is called twice on ending
@@ -187,53 +206,78 @@ function endTask(){
 	};
 	results.push(result);
 
-	//This part is largely generic, but has some experiment-specific stuff
-	if(current_task<(num_tasks-1)){
+    	//This part is largely generic, but has some experiment-specific stuff
+    	if(current_task<(num_tasks-1)){
 
-	    //Experiment-specific transition between task and pause (exchange stimuli)
-	    //We display the big dot
-	    $("#pauseStimulus").show();
-	    $("#stimulus").hide();
-	    $("#stimulus-buttons").hide();
+    	    //Experiment-specific transition between task and pause (exchange stimuli)
+    	    //We display the big dot
+    	    $("#pauseStimulus").show();
+    	    $("#stimulus").hide();
+    	    $("#stimulus-buttons").hide();
 
-	    //We start and display the pause countdown
-	    $('#initialMessage').hide();
-	    $('#clocktask').hide();
-	    $('#clockpauses').show();
-	    $('#clocktask').countdown('option',{
-		onExpiry: null
-	    });
-	    $('#clockpauses').countdown('option',{
-		until: '+'+pause_time+'s', 
-		layout: 'Task will start in {sn}s...',
-		onExpiry: startTask
-	    });
+    	    //We start and display the pause countdown
+    	    $('#initialMessage').hide();
+    	    $('#clocktask').hide();
+    	    $('#clockpauses').show();
+    	    $('#clocktask').countdown('option',{
+    		onExpiry: null
+    	    });
+    	    $('#clockpauses').countdown('option',{
+    		until: '+'+pause_time+'s', 
+    		layout: 'Task will start in {sn}s...',
+    		onExpiry: startTask
+    	    });
 
-	    current_task++;
+    	    current_task++;
 
-	    //We update the progress bar
-	    var progress = Math.floor((current_task / num_tasks)*100);
-	    //console.log('trying to update progress bar to '+progress);
-	    $('#taskProgress').attr("aria-valuenow",progress);
-	    $('#taskProgress').attr("style", "width: "+progress+"%");
-	    //$('#taskProgress').html(progress+" % done");
+    	    //We update the progress bar
+    	    var progress = Math.floor((current_task / num_tasks)*100);
+    	    //console.log('trying to update progress bar to '+progress);
+    	    $('#taskProgress').attr("aria-valuenow",progress);
+    	    $('#taskProgress').attr("style", "width: "+progress+"%");
+    	    //$('#taskProgress').html(progress+" % done");
 
+    	    on_task = false;
 
-	    on_task = false;
+            //We check whether this is the first task of a new interface. If so, we show a modal window with the instructions for it
+            if(current_task % (num_tasks/interfaces.length) == 0){
+                console.log("First task of interface "+get_current_interface());
+                pauseCounters();
+                showPartialModal(get_current_interface());
+            }
 
-	} else {
-	    current_task++;
+    	} else {
+    	    current_task++;
 
-	    //We update the progress bar
-	    var progress = Math.floor((current_task / num_tasks)*100);
-	    //console.log('trying to update progress bar to '+progress);
-	    $('#taskProgress').attr("aria-valuenow",progress);
-	    $('#taskProgress').attr("style", "width: "+progress+"%");
-	    //$('#taskProgress').html(progress+" % done");
+    	    //We update the progress bar
+    	    var progress = Math.floor((current_task / num_tasks)*100);
+    	    //console.log('trying to update progress bar to '+progress);
+    	    $('#taskProgress').attr("aria-valuenow",progress);
+    	    $('#taskProgress').attr("style", "width: "+progress+"%");
+    	    //$('#taskProgress').html(progress+" % done");
 
-	    finishExperiment();
-	}
+    	    finishExperiment();
+    	}
     }
+
+}
+
+// Show the modal window with the intro/help
+function showPartialModal(current_interface){
+
+        $("#modalProfile").css( "display", "none" );
+        $("#intro-text-intro").css( "display", "none" );
+        $("#intro-text-cli").css( "display", "none" );
+        $("#intro-text-gui").css( "display", "none" );
+        $("#intro-text-form").css( "display", "none" );
+        $("#intro-text-dd").css( "display", "none" );
+        //We show the corresponding help for the current interface "dragdrop", "command", "graphical", "form"
+        if(current_interface == 'dragdrop') $("#intro-text-dd").css( "display", "block" );
+        else if(current_interface == 'command') $("#intro-text-cli").css( "display", "block" );
+        else if(current_interface == 'graphical') $("#intro-text-gui").css( "display", "block" );
+        else if(current_interface == 'form') $("#intro-text-form").css( "display", "block" );
+
+        $("#introExperimentModal").modal('show');
 
 }
 

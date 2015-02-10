@@ -3,7 +3,9 @@
   select { width: 150px;}
 </style>
 <script>
-  $("#dropDown").submit(function(event){
+  $("#dropDown").submit(customSubmit);
+
+  function customSubmit(event){
     var ticket = [];
     ticket['from'] = $("#from").val();
     ticket['to'] = $("#to").val();
@@ -13,7 +15,7 @@
     ticket['bike'] = $("#bike").val() == "yes";
     interface_result(ticket);
     return false;
-  });
+  }
 </script>
 
 <form id = "dropDown" name="dropDown" action="#" >
@@ -62,5 +64,7 @@
 	<option value="yes">Yes</option>
 </select>
 <br>
-<input type="submit" value="Buy">
+<!--input type="submit" value="Buy"-->
+  <a class="btn btn-success" id="submit" href="javascript:customSubmit();" role="button">Buy</a>
+
 </form>
