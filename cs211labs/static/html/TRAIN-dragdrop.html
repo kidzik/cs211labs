@@ -2,19 +2,20 @@
 
 #container {text-align: center; }
 #container table {margin: 0 auto; margin-bottom: 10px;border-spacing: 10px;border-collapse: separate;}
-#container table tr td {width: 200px; border: 1px solid; border-radius: 10px; border: 1px solid #555555; }
+#container table tr td {width: 200px; border: 1px solid; border-radius: 10px; border: 1px solid #888888; }
 
 .dragable {
  display: inline-block;
  width: 100px;
- font-size: 16px;
- background-color: #dddddd;
+ font-size: 14px;
+ background-color: #DDFFFF;
  text-align: center;
  padding: 5px;
  -moz-border-radius: 10px;
  border-radius: 10px;
- border: 1px solid #555555;
+ border: 1px solid #999999;
  font-weight: bold;
+ margin: 3px
 }
 #container td {
  text-align: center;
@@ -23,18 +24,25 @@
 .dropable {
  display: block;
  height: 70px;
- padding: 5px;
+ padding: 3px;
+ background-color: #FFFFBB;
+}
+h3 {
+ font-size: 18px;
+} 
+td {
+ font-family: Arial;
 }
 </style>
 <script>
 var ticket = [];
 
-ticket['from'] = "";
-ticket['to'] = "";
-ticket['travel'] = "one-way";
-ticket['travelClass'] = "1";
-ticket['bike'] = false;
-ticket['fare'] = "standard";
+ticket['from'] = null;
+ticket['to'] = null;
+ticket['travel'] = null;
+ticket['travelClass'] = null;
+ticket['bike'] = null;
+ticket['fare'] = null;
 
 var curval = "";
 
@@ -50,8 +58,10 @@ function drag(ev, obj) {
 function dropValue(ev, obj) {
     ev.preventDefault();
     var data = ev.dataTransfer.getData("text");
-    ticket[obj.id] = curval;
-    ev.target.appendChild(document.getElementById(data));
+    if (ticket[obj.id] == null){
+        ticket[obj.id] = curval;
+        ev.target.appendChild(document.getElementById(data));
+    }
 }
 
 $( document ).ready(function() {
@@ -63,6 +73,19 @@ $( document ).ready(function() {
 });
 
   $("#submit").click(function(event){
+    if (ticket['from'] == null)
+        ticket['from'] = "";
+    if (ticket['to'] == null)
+        ticket['to'] = "";
+    if (ticket['travel'] == null)
+        ticket['travel'] = "one-way";
+    if (ticket['travelClass'] == null)
+        ticket['travelClass'] = "2";
+    if (ticket['bike'] == null)
+        ticket['bike'] = false;
+    if (ticket['fare'] == null)
+        ticket['fare'] = "standard";
+
     if (ticket['bike'] == "yes")
       ticket['bike'] = true;
     if (ticket['travelClass'] == "1")
@@ -75,7 +98,9 @@ $( document ).ready(function() {
 
 </script>
 
+<table><tr><td style="vertical-align: top; padding-right: 20px;">
 <div id="container">
+<h3>Your ticket</h3>
 <table><tr><td>
 <div class="dropable" id="from" ondrop="dropValue(event, this)" ondragover="allowDrop(event)">From:<br /></div>
 </td><td>
@@ -92,19 +117,21 @@ $( document ).ready(function() {
 <div class="dropable" id="bike" ondrop="dropValue(event, this)" ondragover="allowDrop(event)">Other:<br /></div>
 </td></tr>
 </table>
+  <input type="submit" value="Buy" class="btn btn-default" id="submit" width="106" height="98">
+</div>
 
+</td><td>
 
 <div id="choices">
-  <input type="submit" value="Buy" class="btn btn-default" id="submit" width="106" height="98">
 
 
 <h3>Cities</h3>
 <div id="Lausanne" class="dragable" draggable="true" ondragstart="drag(event, this)">Lausanne</div>
 <div id="Davos" class="dragable" draggable="true" ondragstart="drag(event, this)">Davos</div>
-<div id="Basel" class="dragable" draggable="true" ondragstart="drag(event, this)">Basel</div>
+<div id="Basel" class="dragable" draggable="true" ondragstart="drag(event, this)">Basel</div><br />
 <div id="Zurich" class="dragable" draggable="true" ondragstart="drag(event, this)">Zurich</div>
 <div id="Fribourg" class="dragable" draggable="true" ondragstart="drag(event, this)">Fribourg</div>
-<div id="Neuchatel" class="dragable" draggable="true" ondragstart="drag(event, this)">Neuchatel</div>
+<div id="Neuchatel" class="dragable" draggable="true" ondragstart="drag(event, this)">Neuchatel</div><br />
 <div id="Geneve" class="dragable" draggable="true" ondragstart="drag(event, this)">Geneve</div>
 
 <h3>Travel</h3>
@@ -122,4 +149,5 @@ $( document ).ready(function() {
 
 <h3>Bike</h3>
 <div id="yes" class="dragable" draggable="true" ondragstart="drag(event, this)">BIKE</div>
-</div>
+
+</td></tr></table>

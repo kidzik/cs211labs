@@ -53,7 +53,6 @@ class ExperimentProcessor(object):
     def get_data(self, results, var, nvars, dep, levels, scaling = 1):
         exps = self.gen_reg_exp(nvars, dep, levels)
         data = []
-        print exps
         for key, val in exps.iteritems():
             res = results.filter(key__iregex=r'^' + val + '/' + var + '$')
             v = self.mean_values(res) * scaling

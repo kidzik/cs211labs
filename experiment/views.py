@@ -39,6 +39,17 @@ class SessionView(FormView):
         form.save()
         return super(SessionView, self).form_valid(form)
 
+class AnalyticsView(TemplateView):
+    """
+    Teachers page. Form for session creation and list of current sessions
+    """
+    template_name = "analytics_index.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(AnalyticsView, self).get_context_data(**kwargs)
+        context['sessions'] = Session.objects.all()
+        return context
+
 class ExperimentView(TemplateView):
     """
     View for all experiments. Shows the html template corresponding to

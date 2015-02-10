@@ -70,12 +70,16 @@
       function drawLinePlot(data, title) {
         var dataTable = google.visualization.arrayToDataTable(data, false);
 
+        var header = data[0];
+        var legend = 'none';
+        if (header.length > 2)
+            legend = 'right';
 
         var options = {
           'title': title,
           'width':600,
           'height':500,
-          'legend': 'none',
+          'legend': legend,
           'hAxis': {
              'format': '0'
           }

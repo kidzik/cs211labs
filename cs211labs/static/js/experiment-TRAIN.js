@@ -24,6 +24,7 @@ var travel = ["one-way", "return"]
 var bike = ["yes", "no"]
 
 var interfaces = ["dragdrop", "command", "graphical", "form"]
+var subtasks_per_interface = num_tasks / interfaces.length
 
 function generate_ticket(){
     var nfare = Math.floor(Math.random() * fares.length); 
@@ -178,6 +179,7 @@ function endTask(){
 	//We send store the data locally to be sent at the end of the experiment
 	var result = {
 	    "ordinal": current_task,
+	    "sub_ordinal": current_task % subtasks_per_interface,
 	    "interface": get_current_interface(),
 	    "outcome_corr": current_task_success,
 	    "help": help_hits,

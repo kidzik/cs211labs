@@ -15,7 +15,7 @@ class Course(models.Model):
 class Session(models.Model):
     experiment = models.ForeignKey(Experiment)
     course = models.ForeignKey(Course)
-    time = models.TimeField(auto_now_add=True)
+    time = models.DateTimeField(auto_now_add=True)
     closed = models.BooleanField()
 
     def __str__(self):
