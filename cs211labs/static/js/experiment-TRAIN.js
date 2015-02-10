@@ -2,6 +2,7 @@
 task_time = 60; // time to do each task, in seconds
 pause_time = 2; // pause between each task, in seconds
 
+var score=0;
 
 // TODO 1: Define the user profile useful for this task (to be shown as a form in the intro)
 //User profile for the STROOP task
@@ -198,6 +199,10 @@ function endTask(){
 	};
 	results.push(result);
 
+    //We add up the score of this task
+    if(current_task_success) score += ((task_time*1000-(current_task_elapsed_time - total_help_time))/task_time*1000)*100;
+    else score-=50;
+
     	//This part is largely generic, but has some experiment-specific stuff
     	if(current_task<(num_tasks-1)){
 
@@ -279,6 +284,7 @@ function showPartialModal(current_interface){
 function finishExperiment(){
 
     //Show modal Thankyou window with disabled buttons while we send the results to server
+    $('#score').html('Your score was '+score);
     $('#endModal').modal('show');
     $('#closetrbutton').hide();
     $('#endBackHome').button('loading');
