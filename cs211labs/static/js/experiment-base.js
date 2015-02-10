@@ -48,6 +48,7 @@ function init(){
 
 	//We start the counters as soon as the modal window is closed
 	$('#introExperimentModal').on('hide.bs.modal', function () {
+
 		on_modal=false;
 		if(!counters_initialized){
 			initCounters();	
@@ -61,6 +62,7 @@ function init(){
     	}
 
    		intro = false; //Next time, the intro will be in help mode
+
   	});
 
   	$('#introExperimentModal').on('show.bs.modal', function () {

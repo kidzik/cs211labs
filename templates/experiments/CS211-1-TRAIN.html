@@ -14,25 +14,38 @@
 {% block experiment-title %}CS211-3: The Train Tickets game{% endblock %}
 
 {% block experiment-intro-text %}
-<p>You are about to see three interfaces for ordering tickets. They will be presented in the random order. Your task is to order a ticket, requested on the bottom of each page.</p>
+<div id="intro-text-intro">
+<p>You are about to see four different kinds of user interfaces for ordering tickets. They will be presented in a random order. Your task is to order a ticket, requested on the bottom of each page.</p>
+</div>
 
+<div id="intro-text-cli">
 <p><strong>Command line interface.</strong> In this interface you write a command in the following format:
 <pre>from [city] to [city] {young|half-fare|standard} {bike}
     {one-way|return} {C1|C2}</pre>
-where cities are obligatory. Optional arguments are {young|half-fare|standard} stands for fare, {bike} for ticket with a bike, {one-way|return} for the type of travel and {C1|C2} is the first or the second class.</p
+where cities are obligatory. Optional arguments are {young|half-fare|standard} stands for fare, {bike} for ticket with a bike, {one-way|return} for the type of travel and {C1|C2} is the first or the second class.</p>
 <p>Example</p>
 <pre>
 from Zurich to Lausanne young C1 one-way
 </pre>
 <p>will order a ticket 1st class one-way from Zurich to Lausanne with a discount for young people and without bike.</p>
+</div>
 
-<p><strong>Graphical interface.</strong> In this interface you choose a cities from the map. The first chosen city is the one you from which you start the travel and the second is the destination. Other options are to be chosen from the form under the map.</p>
+<div id="intro-text-gui">
+<p><strong>Graphical interface.</strong> In this interface you choose origin/destination cities from a map. The first chosen city is the one you from which you start the travel and the second is the destination. Other options are to be chosen from the form under the map.</p>
+</div>
 
-<p><strong>Form interface.</strong> Choose your city, destination, fare and other options from a form.</p>
+<div id="intro-text-form">
+<p><strong>Form interface.</strong> Choose your city, destination, fare and other options from dropdown fields in a form.</p>
+</div>
+
+<div id="intro-text-dd">
+<p><strong>Drag-and-drop interface.</strong> In this interface you will choose the different possible elements of the ticket (origin, destination, fare, etc.) using the mouse, dragging them onto the appropriate box/field (from, to, fare, bike, etc.).</p>
+</div>
 
 <p>
-Note that options one-way, standard fare, 2nd class and no bike are default in each interface.
+Please note that options one-way, standard fare, 2nd class and no bike are default in each interface.
 </p>
+
 {% endblock %}
 
 {% block experiment-profile-form %}
@@ -56,7 +69,7 @@ Note that options one-way, standard fare, 2nd class and no bike are default in e
 {% block experiment-content %}
 
 	<div class="well">
-  		<div id="keyInstructions" class="text-center animated-bg">Please buy the ticket exactly like the one which will appear here.</div>
+  		<div id="keyInstructions" class="text-center animated-bg">Please buy the ticket with the options that will appear here.</div>
   		
   		<div class="help-button-well text-right"><a class="btn btn-default text-right help-button" id="help-button" href="javascript:showHelp();" role="button">Help &raquo;</a></div>
 		<div class="progress">
