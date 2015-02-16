@@ -78,7 +78,7 @@ class ExperimentTrainProcessor(ExperimentProcessor):
         processed.append({'data': header + data, 'title': "Mean errors per try for each interface", 'var': "Mean errors", 'type': 'line'})
 
         header = [["time"] + interfaces]
-        data = self.get_data2d(results, "time", 3, 1, 2, interfaces, range(5), scaling = 1)
+        data = self.get_data2d(results, "time", 3, 1, 2, interfaces, range(5), scaling = 0.001)
         data.sort()
         processed.append({'data': header + data, 'title': "Mean time per try for each interface", 'var': "Mean time", 'type': 'line'})
 
