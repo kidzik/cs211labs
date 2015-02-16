@@ -187,7 +187,7 @@ function endTask(){
 	
 	//This part is experiment-specific
 	//We decide if the task was correct?
-	console.log("ended task - correctly? "+current_task_success + " in " + (current_task_elapsed_time - total_help_time) + " ms.");
+	console.log("ended task - correctly? "+current_task_success + " in " + (current_task_elapsed_time - total_help_time) + " ms. Score before task: "+score);
 	//We send store the data locally to be sent at the end of the experiment
 	var result = {
 	    "ordinal": current_task,
@@ -200,8 +200,13 @@ function endTask(){
 	results.push(result);
 
     //We add up the score of this task
-    if(current_task_success) score += ((task_time*1000-(current_task_elapsed_time - total_help_time))/task_time*1000)*100;
-    else score-=50;
+    
+    if(current_task_success){
+        var task_score = Math.floor(((task_time*1000-(current_task_elapsed_time - total_help_time))/(task_time*1000))*100);
+        console.log("Correct task score: "+task_score);
+        score += task_score;  
+    } 
+    else score -= 50;
 
     	//This part is largely generic, but has some experiment-specific stuff
     	if(current_task<(num_tasks-1)){
