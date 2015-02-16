@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<!-- Main jumbotron for a primary marketing message or call to action -->
+    <div class="jumbotron">
+      <div class="container">
+        <h2>Experimens' results</h2>
+      </div>
+    </div>
+
+    <div class="container">
+
+
+    	<div class="row">
+
+			<h2>Existing sessions</h2>
+			
+			<div class="table-responsive">
+				<table class="table table-striped">
+				<tr>
+				<th>Session name</th><th>Experiment</th><th>Course</th><th>Time</th><th># students</th><th>Actions</th>
+				{% for session in sessions %}
+					<tr>
+					<td>{{ session }}</td>
+					<td>{{ session.experiment }}</td>
+					<td>{{ session.course }}</td>
+					<td>{{ session.time }}</td>
+					<td>{{ session.num_students_completed }} / {{ session.num_students }}</td>
+					<td><a href="{% url "results" session.id %}">See results</a>
+					</td>
+					</tr>
+				{% endfor %}
+				</tr>
+				</table>
+
+			</div>
+		</div>
+
+	</div>
+
+{% endblock %}
