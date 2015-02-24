@@ -8,7 +8,7 @@
 	<h2>Results of the session {{ session }}</h2>
 	Students completed: {{ session.num_students_completed }} / {{ session.num_students }}
   <br/>
-  <button type="button" id="printableVersion" class="btn btn-primary btn-lg printable-version"><span class="glyphicon glyphicon-print" aria-hidden="true"></span> Printable version</button>
+  <a href="{% url 'results_print' session.id %}"><button type="button" id="printableVersion" class="btn btn-primary btn-lg printable-version"><span class="glyphicon glyphicon-print" aria-hidden="true"></span> Printable version</button></a>
       </div>
     </div>
 
@@ -32,10 +32,10 @@
     </style>
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript">
-      var print = false;
+      var print_mode = false;
 
       {% if print %}
-      print = true;
+      print_mode = true;
       {% endif %}
 
       // Load the Visualization API and the piechart package.
@@ -78,8 +78,7 @@
         var options = chartD[1];
 
         // if print then smaller graphs and output in png
-        if (print == true){
-
+        if (print_mode == true){
           options['height'] = 450;
           google.visualization.events.addListener(chart, 'ready', function () {
             newChart.innerHTML = '<img src="' + chart.getImageURI() + '">';
@@ -145,8 +144,6 @@
         {% endfor %}
       }
       {% endautoescape %}
-
-      window.print();
     </script>
           
     <script src="{% static 'js/printToPDF.js' %}"></script>
