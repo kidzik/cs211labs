@@ -191,3 +191,9 @@ body {
 .huge {
   font-size: 3em;
 }
+
+
+/* Analytics styles */
+.printable-version {
+  float: right;
+}
