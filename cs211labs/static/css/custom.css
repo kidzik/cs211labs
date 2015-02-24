@@ -195,3 +195,8 @@ body {
 #charts > div {
   text-align: center;
 }
+
+/* Analytics styles */
+.printable-version {
+  float: right;
+}

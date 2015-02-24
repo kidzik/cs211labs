@@ -7,6 +7,8 @@
       <div class="container">
 	<h2>Results of the session {{ session }}</h2>
 	Students completed: {{ session.num_students_completed }} / {{ session.num_students }}
+  <br/>
+  <button type="button" id="printableVersion" class="btn btn-primary btn-lg printable-version"><span class="glyphicon glyphicon-print" aria-hidden="true"></span> Printable version</button>
       </div>
     </div>
 
@@ -146,5 +148,8 @@
 
       window.print();
     </script>
+          
+    <script src="{% static 'js/printToPDF.js' %}"></script>
+
 
 {% endblock scripts %}
