@@ -30,6 +30,11 @@
     </style>
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript">
+      var print = false;
+
+      {% if print %}
+      print = true;
+      {% endif %}
 
       // Load the Visualization API and the piechart package.
       google.load('visualization', '1.0', {'packages':['corechart']});
@@ -38,17 +43,52 @@
       google.setOnLoadCallback(onLoad);
 
       function drawPlot(data, title, type, variable){
-        if (type == "barplot")
-          drawBarPlot(data, title, variable);
-        if (type == "scatter")
-          drawScatterPlot(data, title);
-        if (type == "line")
-          drawLinePlot(data, title);
+        var charts = document.getElementById('charts');
+        var newChart = document.createElement('div');
+        charts.appendChild(newChart);
+
+        var chart;
+        var dataTable;
+
+        if (type == "barplot"){
+          dataTable = new google.visualization.DataTable();
+          if (typeof data[0][0] == "string")
+            dataTable.addColumn('string', 'Mode');
+          else
+            dataTable.addColumn('number', 'Time');
+          dataTable.addColumn('number', variable);
+          dataTable.addRows(data);
+
+          chartD = drawBarPlot(newChart, data, title, variable);
+        }
+        if (type == "scatter"){
+          dataTable = google.visualization.arrayToDataTable(data);
+
+          chartD = drawScatterPlot(newChart, data, title);
+        }
+        if (type == "line"){
+          dataTable = google.visualization.arrayToDataTable(data, false);
+
+          chartD = drawLinePlot(newChart, data, title);
+        }
+
+        var chart = chartD[0];
+        var options = chartD[1];
+
+        // if print then smaller graphs and output in png
+        if (print == true){
+
+          options['height'] = 450;
+          google.visualization.events.addListener(chart, 'ready', function () {
+            newChart.innerHTML = '<img src="' + chart.getImageURI() + '">';
+          });
+        }
+      
+        chart.draw(dataTable, options);
+
       }
       
-      function drawScatterPlot(data, title) {
-        var dataTable = google.visualization.arrayToDataTable(data);
-
+      function drawScatterPlot(newChart, data, title) {
         var options = {
           'title': title,
           'width':600,
@@ -56,20 +96,11 @@
           'legend': 'none'
         };
 
-        // Instantiate and draw our chart, passing in some options.
-        var charts = document.getElementById('charts');
-        var newChart = document.createElement('div');
-        var content = document.createTextNode('test');
-        newChart.appendChild(content);
-        charts.appendChild(newChart);
-
         var chart = new google.visualization.ScatterChart(newChart);
-        chart.draw(dataTable, options);
+        return [chart, options];
       }
 
-      function drawLinePlot(data, title) {
-        var dataTable = google.visualization.arrayToDataTable(data, false);
-
+      function drawLinePlot(newChart, data, title) {
         var header = data[0];
         var legend = 'none';
         if (header.length > 2)
@@ -88,27 +119,11 @@
           }
         };
 
-        // Instantiate and draw our chart, passing in some options.
-        var charts = document.getElementById('charts');
-        var newChart = document.createElement('div');
-        var content = document.createTextNode('test');
-        newChart.appendChild(content);
-        charts.appendChild(newChart);
-
         var chart = new google.visualization.LineChart(newChart);
-        chart.draw(dataTable, options);
+        return [chart, options];
       }
 
-      function drawBarPlot(data, title, variable) {
-        // Create the data table.
-        var dataTable = new google.visualization.DataTable();
-        if (typeof data[0][0] == "string")
-          dataTable.addColumn('string', 'Mode');
-        else
-          dataTable.addColumn('number', 'Time');
-        dataTable.addColumn('number', variable);
-        dataTable.addRows(data);
-
+      function drawBarPlot(newChart, data, title, variable) {
         // Set chart options
         var options = {'title':title,
                        'width':600,
@@ -117,16 +132,8 @@
                        'vAxis': {'minValue': 0},
                        'titleTextStyle': {fontSize: 20}};
 
-        // Instantiate and draw our chart, passing in some options.
-        var charts = document.getElementById('charts');
-        var newChart = document.createElement('div');
-        var content = document.createTextNode('test');
-        newChart.appendChild(content);
-
-        charts.appendChild(newChart);
-
         var chart = new google.visualization.BarChart(newChart);
-        chart.draw(dataTable, options);
+        return [chart, options];
       }
 
       {% autoescape off %}
@@ -136,6 +143,8 @@
         {% endfor %}
       }
       {% endautoescape %}
+
+      window.print();
     </script>
 
 {% endblock scripts %}

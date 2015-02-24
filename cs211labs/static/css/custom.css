@@ -191,3 +191,7 @@ body {
 .huge {
   font-size: 3em;
 }
+
+#charts > div {
+  text-align: center;
+}

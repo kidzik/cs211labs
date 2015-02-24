@@ -28,5 +28,8 @@ class ResultsView(TemplateView):
         processed_results = ep.process_results(results)
 
         context = {"results": processed_results, "session": session}
+
+        if kwargs.has_key('print') and kwargs['print']:
+            context['print'] = True
         return render(request, "analytics/generic.html", context)
 
