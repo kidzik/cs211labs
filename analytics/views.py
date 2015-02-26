@@ -12,7 +12,6 @@ EXPERIMENT_CLASSES = {
     "CS211-5-FITT": ExperimentFittsProcessor
 }
 
-# Create your views here.
 class ResultsView(TemplateView):
     """
     Converts tuples of the given experiment into aggregated
@@ -32,4 +31,21 @@ class ResultsView(TemplateView):
         if kwargs.has_key('print') and kwargs['print']:
             context['print'] = True
         return render(request, "analytics/generic.html", context)
+
+class ExportView(TemplateView):
+    """
+    Converts tuples of the given experiment into a csv table
+    """
+    def get(self, request, *args, **kwargs):
+        session = Session.objects.get(id = kwargs['id'])
+        results = Result.objects.filter(user__in = session.user_set.all())
+
+        res = []
+        for result in results:
+            s = (result.key + "/" + result.value).replace('/',',')
+            res.append(s)
+
+        context = {"results": res, "session": session}
+
+        return render(request, "analytics/export.csv", context)
 
