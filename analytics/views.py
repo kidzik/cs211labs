@@ -3,6 +3,8 @@ from django.views.generic import View, TemplateView
 from experiment.models import *
 from analytics.processors import *
 import simplejson
+import csv
+from django.http import HttpResponse
 
 EXPERIMENT_CLASSES = {
     "CS211-1-TRAIN": ExperimentTrainProcessor,
@@ -40,12 +42,12 @@ class ExportView(TemplateView):
         session = Session.objects.get(id = kwargs['id'])
         results = Result.objects.filter(user__in = session.user_set.all())
 
-        res = []
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="session' + kwargs['id'] + '.csv"'
+
+        writer = csv.writer(response)
         for result in results:
-            s = (result.key + "/" + result.value).replace('/',',')
-            res.append(s)
+            s = (result.key + "/" + result.value).split('/')
+            writer.writerow(s)
 
-        context = {"results": res, "session": session}
-
-        return render(request, "analytics/export.csv", context)
-
+        return response
