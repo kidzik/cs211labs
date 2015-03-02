@@ -29,6 +29,23 @@
          display: block;
          margin: 0 auto !important;
       }
+      table.google-visualization-table-table {
+         margin: 0 auto;
+      }
+      .google-visualization-table-table td, .google-visualization-table-table th {
+         font-size: 15pt;
+         padding: 10px;
+         width: 100px;
+      }
+      .google-visualization-table-tr-head .gradient {
+         background-image: none !important;
+         text-align: center !important;
+      }
+      h3 {
+         text-align: center;
+         font-weight: bold;
+         font-size: 15pt;
+      }
     </style>
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript">
@@ -39,7 +56,7 @@
       {% endif %}
 
       // Load the Visualization API and the piechart package.
-      google.load('visualization', '1.0', {'packages':['corechart']});
+      google.load('visualization', '1.0', {'packages':['corechart','table']});
 
       // Set a callback to run when the Google Visualization API is loaded.
       google.setOnLoadCallback(onLoad);
@@ -72,6 +89,15 @@
           dataTable = google.visualization.arrayToDataTable(data, false);
 
           chartD = drawLinePlot(newChart, data, title);
+        }
+        if (type == "table"){
+          var h3 = document.createElement('h3');
+          h3.innerHTML = title;
+          charts.insertBefore(h3, newChart);
+
+          dataTable = google.visualization.arrayToDataTable(data, false);
+
+          chartD = drawTablePlot(newChart, data, title);
         }
 
         var chart = chartD[0];
@@ -121,6 +147,28 @@
         };
 
         var chart = new google.visualization.LineChart(newChart);
+        return [chart, options];
+      }
+
+      function drawTablePlot(newChart, data, title) {
+        var header = data[0];
+        var legend = 'none';
+        if (header.length > 2)
+            legend = 'right';
+
+        var options = {
+          'title': title,
+          'legend': legend,
+          'alternatingRowStyle': false,
+          'hAxis': {
+             'format': '0'
+          },
+          'vAxis': {
+             'minValue': 0
+          }
+        };
+
+        var chart = new google.visualization.Table(newChart);
         return [chart, options];
       }
 
