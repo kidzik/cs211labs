@@ -98,13 +98,20 @@
           dataTable = google.visualization.arrayToDataTable(data, false);
 
           chartD = drawTablePlot(newChart, data, title);
+
+          var formatter = new google.visualization.NumberFormat(
+          {});
+          for (var i = 0 ; i < dataTable.getNumberOfColumns(); i++){
+   	    if (dataTable.getColumnType(i) == 'number')
+              formatter.format(dataTable, i); // Apply formatter to second colu
+          }
         }
 
         var chart = chartD[0];
         var options = chartD[1];
 
         // if print then smaller graphs and output in png
-        if (print_mode == true){
+        if (print_mode == true && type != "table"){
           options['height'] = 450;
           google.visualization.events.addListener(chart, 'ready', function () {
             newChart.innerHTML = '<img src="' + chart.getImageURI() + '">';

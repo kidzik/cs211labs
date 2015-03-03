@@ -82,7 +82,7 @@ class ExperimentSTROOPProcessor(ExperimentProcessor):
         header = [[""] + colors]
         data = self.get_data2d(results, "errors", 5, 3, 4, colors, colors, scaling = 1)
         data.sort()
-        processed.append({'data': header + data, 'title': "Mean errors per text color / semantic color", 'var': "Mean errors", 'type': 'table'})
+        processed.append({'data': header + data, 'title': "Mean errors per text color (rows) / semantic color (columns)", 'var': "Mean errors", 'type': 'table'})
 
 
         return processed
