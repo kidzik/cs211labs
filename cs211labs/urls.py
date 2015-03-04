@@ -3,7 +3,7 @@ from django.conf.urls import patterns, include, url
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.contrib import admin
 from experiment.views import UserIndexView, SessionView, SessionManagementView, ExperimentView, SubmitResultView, AnalyticsView
-from analytics.views import ResultsView
+from analytics.views import ResultsView, ExportView
 from django.views.decorators.csrf import csrf_exempt
 
 from django.contrib.auth.decorators import login_required
@@ -26,6 +26,8 @@ urlpatterns = patterns('',
 
     url(r'^teacher/$', login_required(SessionView.as_view()), name='teacher'),
     url(r'^results/(?P<id>\d+)/$', ResultsView.as_view(), name='results'),
+    url(r'^results/(?P<id>\d+)/print/$', ResultsView.as_view(), {'print':True}, name='results_print'),
+    url(r'^results/(?P<id>\d+)/export/$', login_required(ExportView.as_view()), name='export'),
     url(r'^session/(?P<action>\w+)/(?P<id>\d+)/$', login_required(SessionManagementView.as_view()),
         name='session_management'),
 

@@ -192,6 +192,9 @@ body {
   font-size: 3em;
 }
 
+#charts > div {
+  text-align: center;
+}
 
 /* Analytics styles */
 .printable-version {
