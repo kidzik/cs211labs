@@ -1,7 +1,7 @@
 // TODO 0: General parameters of this experiment (time for each task and pauses in between)
-var task_time_sym = 120; // time to do each task, in seconds
-var task_time_ball = 120;
-var task_time_dual = 120;
+var task_time_sym = 60; // time to do each task, in seconds
+var task_time_ball = 60;
+var task_time_dual = 60;
 
 var current_minitask=0;
 var minitask_time_sym=10; //Time to answer the minitask about symmetry
