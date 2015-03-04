@@ -59,7 +59,9 @@ Format of json input: list of
   "outcome_ball_corr": true,
   "outcome_sym_corr": true,
   "time_ball": 240,
-  "time_sym": 360
+  "time_sym": 360,
+  "complexity_ball": 13,
+  "complexity_sym": 12
 }, ...
 ]}
 

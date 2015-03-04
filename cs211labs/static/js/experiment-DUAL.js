@@ -609,6 +609,8 @@ function endMiniTask(){
 	  "time_ball": (current_minitask_elapsed_time_ball - total_help_time),
 	  "outcome_sym_corr": current_minitask_sym_success,
 	  "time_sym": (current_minitask_elapsed_time_sym - total_help_time),
+	  "complexity_ball": ball_speed,
+	  "complexity_sym": (current_fig.complexity)*10
 	};
 
 
