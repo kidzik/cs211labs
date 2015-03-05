@@ -1,4 +1,5 @@
 from . import ExperimentProcessor
+import math
 
 class ExperimentDualProcessor(ExperimentProcessor):
     def map_results(self, data, profile):
@@ -29,7 +30,7 @@ class ExperimentDualProcessor(ExperimentProcessor):
             s = s + ("ball" if el['outcome_ball_corr'] == "A" else "symmetry") + "/"
             s = s + el['ordinal'].__str__() + "/"
             s = s + el['complexity_ball'].__str__() + "/"
-            s = s + el['complexity_sym'].__str__() + "/"
+            s = s + (math.floor(el['complexity_sym'])).__str__() + "/"
 
             results[s + "error_ball"] = 0 if el['outcome_ball_corr'] else 1
             results[s + "error_sym"] = 0 if el['outcome_sym_corr'] else 1
