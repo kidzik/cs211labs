@@ -65,7 +65,7 @@ function init_specific(){
 		user_profile.condition = "A";
 	} 
 	else{
-//		user_profile.condition = "B";
+		user_profile.condition = "B";
 	} 
 
 	//We add the behavior to capture keypresses
