@@ -38,7 +38,7 @@ class ExperimentProcessor(object):
                 if i == dep:
                     s = s + level.__str__()
                 else:
-                    s = s + r"[0-9a-zA-Z]+"
+                    s = s + r"[0-9a-zA-Z\.]+"
                 if i < nvars - 1:
                     s = s + r"/"
             res[level] = s

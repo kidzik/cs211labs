@@ -27,7 +27,7 @@ class ExperimentDualProcessor(ExperimentProcessor):
 
         for el in data:
             s = ""
-            s = s + ("ball" if el['outcome_ball_corr'] == "A" else "symmetry") + "/"
+            s = s + ("ball" if profile['condition'] == "A" else "symmetry") + "/"
             s = s + el['ordinal'].__str__() + "/"
             s = s + el['complexity_ball'].__str__() + "/"
             s = s + (math.floor(el['complexity_sym'])).__str__() + "/"
@@ -35,7 +35,7 @@ class ExperimentDualProcessor(ExperimentProcessor):
             results[s + "error_ball"] = 0 if el['outcome_ball_corr'] else 1
             results[s + "error_sym"] = 0 if el['outcome_sym_corr'] else 1
             results[s + "time_ball"] = el['time_ball'].__str__()
-            results[s + "time_sym"] = el['time_ball'].__str__()
+            results[s + "time_sym"] = el['time_sym'].__str__()
 
         return results, profile
 
@@ -47,27 +47,34 @@ class ExperimentDualProcessor(ExperimentProcessor):
         #  - ordinal/complexity_ball/complexity_sym
         # Example:
         #    1/12/1/error_ball -> 0
+        
+        res_sym = results.filter(key__iregex=r'^symmetry/')
+
         header = [[{'id': "time", 'label': "time", 'type': "number"},{'id': "value", 'label': "value", 'type': "number"}],]
-        data = self.get_data(results, "error_sym", 4, 2, range(1,10))
+        r = [i.__str__() + ".0" for i in range(1,7)]
+        data = self.get_data(res_sym, "error_sym", 4, 3, r)
         data.sort()
-        processed.append({'data': header + data, 'title': 'Errors in symmetry task vs difficulty', 'var': 'Errors in time', 'type': 'line'})
+        processed.append({'data': header + data, 'title': 'Errors in the symmetry task vs difficulty', 'var': 'Errors in time', 'type': 'line'})
  
         header = [[{'id': "time", 'label': "time", 'type': "number"},{'id': "value", 'label': "value", 'type': "number"}],]
-        data = self.get_data(results, "time_sym", 4, 2, range(1,10))
+        data = self.get_data(res_sym, "time_sym", 4, 3, r, scaling=0.001)
         data.sort()
         processed.append({'data': header + data, 'title': 'Time of symmetry task vs difficulty', 'var': 'Errors in time', 'type': 'line'})
  
 
+        res_ball = results.filter(key__iregex=r'^ball/')
+        print res_ball
 
         header = [[{'id': "time", 'label': "time", 'type': "number"},{'id': "value", 'label': "value", 'type': "number"}],]
-        data = self.get_data(results, "error_ball", 4, 2, range(1,10))
+        data = self.get_data(res_ball, "error_ball", 4, 2, range(1,20))
         data.sort()
-        processed.append({'data': header + data, 'title': 'Errors in dual task vs difficulty', 'var': 'Errors in time', 'type': 'line'})
+        processed.append({'data': header + data, 'title': 'Errors in ball task vs difficulty', 'var': 'Errors in time', 'type': 'line'})
  
         header = [[{'id': "time", 'label': "time", 'type': "number"},{'id': "value", 'label': "value", 'type': "number"}],]
-        data = self.get_data(results, "time_ball", 4, 2, range(1,10))
+        data = self.get_data(res_ball, "time_ball", 4, 2, range(1,20), scaling=0.001)
         data.sort()
-        processed.append({'data': header + data, 'title': 'Time of dual task vs difficulty', 'var': 'Errors in time', 'type': 'line'})
+        
+        processed.append({'data': header + data, 'title': 'Time of ball task vs difficulty', 'var': 'Errors in time', 'type': 'line'})
  
         return processed
 
