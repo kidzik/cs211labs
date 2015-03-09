@@ -1,5 +1,5 @@
 // TODO 0: General parameters of this experiment (time for each task and pauses in between)
-task_time = 30; // time to do each task, in seconds
+task_time = 45; // time to do each task, in seconds
 pause_time = 2; // pause between each task, in seconds
 var cur_task_resp = false; // was the last question responded
 
@@ -25,7 +25,7 @@ var phrases = [
 {
 	statements: "$c is the mother of $d<br/>$a is the father of $b<br/>$e is the brother of $d<br/>$b is the brother of $c", 
 	subjects: ["$a", "$b", "$c", "$d", "$e"],
-	sex: ["m", "f", "f", "m", "m"],
+	sex: ["m", "m", "f", "m", "m"],
 	question: "Who is the grandfather of $e?", 
 	num_elements: 4, 
 	options: ["$a","$d","$e"], 
@@ -79,7 +79,7 @@ var phrases = [
 {
 	statements: "$b is the mother of $f<br/>$i is the son of $g<br/>$j is the brother of $h<br/>$b is the daughter of $a<br/>$c is the husband of $d<br/>$k is the wife of $a<br/>$e is the son of $d<br/>$c is the brother of $b<br>$h is the brother of $b<br/>$f is the brother of $g", 
 	subjects: ["$a", "$b", "$c", "$d", "$e", "$f", "$g", "$h", "$i", "$j", "$k"],
-	sex: ["f", "f", "m", "f", "m", "m", "m", "f", "m", "m", "f"],
+	sex: ["f", "f", "m", "f", "m", "m", "m", "m", "m", "m", "f"],
 	question: "Who is the mother of $h?", 
 	num_elements: 10, 
 	options: ["$b","$d","$k"], 

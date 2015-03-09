@@ -13,7 +13,7 @@
 
 {% block experiment-title %}CS211-4: The Dual Task{% endblock %}
 
-{% block experiment-intro-text %}<p>This lab intends to measure some phenomena in human cognition, by asking you to do first one, and then two tasks simultaneously.</p><p>First, on the side screens, you will have to say whether a series of geometrical shapes are symmetrical (answer using the Y and N keys, or the Yes/No buttons).</p><p>Then, in the middle screen, you have to destroy the falling balls before they touch the ground, using a laser, as fast as you can (basically use the cursors or the buttons to move left and right the cannon).</p><p>Finally, you will have to perform both tasks simultaneously.</p>{% endblock %}
+{% block experiment-intro-text %}<p>You will have to do 3 tasks, for one minute each:</p><p>1. Decide whether two shapes are symmetrical (Y/N)</p><p>2. Destroy the falling ball before it touches the ground (cursor/arrow keys)</p><p>3. Do both at the same time!</p>{% endblock %}
 
 {% block experiment-profile-form %}
 	<br/>
@@ -36,7 +36,7 @@
 {% block experiment-content %}
 
 	<div class="well">
-  		<div id="keyInstructions" class="text-center animated-bg">Please use the Y/N to answer the symmetry question, and cursor keys to destroy the ball (or use the buttons).</div>
+  		<div id="keyInstructions" class="text-center animated-bg">Use the Y/N keys to answer the symmetry question, and/or the arrow/cursor keys to destroy the ball.</div>
   		
   		<div class="help-button-well text-right"><a class="btn btn-default" href="javascript:showHelp();" role="button">Help &raquo;</a></div>
 		<div class="progress">
@@ -64,7 +64,7 @@
 
 	            <div id="stimulus-buttons"></div>
 	          </div>
-	          <p id="countdownMessage" class="text-right"><span id="initialMessage">The task is about to start. You will have <strong>2 minutes</strong> to solve as many tasks as you can.</span> <span id="clockpauses"></span> <span id="clocktask"></span><p>
+	          <p id="countdownMessage" class="text-right"><span id="initialMessage">The task is about to start. You will have <strong>1 minute</strong> to solve as many tasks as you can.</span> <span id="clockpauses"></span> <span id="clocktask"></span><p>
 	        </div>
 	    </div>
 	  </div>
