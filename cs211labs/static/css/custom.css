@@ -4,6 +4,10 @@ body {
   padding-top: 0px;
 }
 
+.modal-body {
+  font-size: 150%;
+}
+
 .well {
   padding: 9px;
 }

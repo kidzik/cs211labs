@@ -4,7 +4,7 @@ var task_time_ball = 60;
 var task_time_dual = 60;
 
 var current_minitask=0;
-var minitask_time_sym=10; //Time to answer the minitask about symmetry
+var minitask_time_sym=5; //Time to answer the minitask about symmetry
 							//For the ball game, it only depends on the time it takes to reach the ground (may change)
 var current_minitask_timestamp=0;//Timestamp for each minitask
 
@@ -176,7 +176,7 @@ function createBall () {
     console.log("adding new tween to "+game.tweens.getAll().length);
 
     //  All this does is basically start the invaders moving. Notice we're moving the Group they belong to, rather than the invaders directly.
-    var tween = game.add.tween(aliens).to( { y: 500 }, 10000, Phaser.Easing.Linear.None, true, 0, 0, false);
+    var tween = game.add.tween(aliens).to( { y: 500 }, minitask_time_sym*1000, Phaser.Easing.Linear.None, true, 0, 0, false);
     tween.timeScale = (9+ball_speed)/10; //Speed of the ball movement, constant in the baseline, can be increased if needed
     //  When the tween loops it calls descend
     tween.onComplete.add(touchGround, this);
