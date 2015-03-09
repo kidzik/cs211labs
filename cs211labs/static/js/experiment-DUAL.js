@@ -1,6 +1,6 @@
 // TODO 0: General parameters of this experiment (time for each task and pauses in between)
-var task_time_sym = 60; // time to do each task, in seconds
-var task_time_ball = 60;
+var task_time_sym = 30; // time to do each task, in seconds
+var task_time_ball = 30;
 var task_time_dual = 60;
 
 var current_minitask=0;
@@ -219,11 +219,11 @@ function update() {
         // TODO: Add the buttons actions????
         if (cursors.left.isDown)
         {
-            player.body.velocity.x = -200;
+            player.body.velocity.x = -500;
         }
         else if (cursors.right.isDown)
         {
-            player.body.velocity.x = 200;
+            player.body.velocity.x = 500;
         }
 
         fireBullet();

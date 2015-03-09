@@ -30,7 +30,7 @@ class ExperimentDualProcessor(ExperimentProcessor):
             s = s + ("ball" if profile['condition'] == "A" else "symmetry") + "/"
             s = s + el['ordinal'].__str__() + "/"
             s = s + el['complexity_ball'].__str__() + "/"
-            s = s + (math.floor(el['complexity_sym'])).__str__() + "/"
+            s = s + (int(math.floor(el['complexity_sym']))).__str__() + "/"
 
             results[s + "error_ball"] = 0 if el['outcome_ball_corr'] else 1
             results[s + "error_sym"] = 0 if el['outcome_sym_corr'] else 1
@@ -74,19 +74,20 @@ class ExperimentDualProcessor(ExperimentProcessor):
         # Example:
         #    1/12/1/error_ball -> 0
 
-        r = [i.__str__() + ".0" for i in range(1,7)]
+        r = range(1,20)
         
         res_sym = results.filter(key__iregex=r'^symmetry/')
+        print res_sym
 
         header = [[{'id': "time", 'label': "time", 'type': "number"},{'id': "value", 'label': "Symmetry errors", 'type': "number"},{'id': "value", 'label': "Ball errors", 'type': "number"}],]
 #        data = self.get_data(res_sym, "error_sym", 4, 3, r)
-        data = self.get_data2d(res_sym, 5, 3, 4, ["error_sym", "error_ball"], r)
+        data = self.get_data2d(res_sym, 5, 1, 1, ["error_sym", "error_ball"], r)
         data.sort()
         processed.append({'data': header + data, 'title': 'Symmetry condition: Errors vs difficulty', 'var': 'Errors in time', 'type': 'line'})
  
         header = [[{'id': "time", 'label': "time", 'type': "number"},{'id': "value", 'label': "Symmetry time", 'type': "number"},{'id': "value", 'label': "Ball time", 'type': "number"}],]
 #        data = self.get_data(res_sym, "error_sym", 4, 3, r)
-        data = self.get_data2d(res_sym, 5, 3, 4, ["time_sym", "time_ball"], r, scaling=0.001)
+        data = self.get_data2d(res_sym, 5, 1, 1, ["time_sym", "time_ball"], r, scaling=0.001)
         data.sort()
         processed.append({'data': header + data, 'title': 'Symmetry condition: Time vs difficulty', 'var': 'Errors in time', 'type': 'line'})
  
@@ -95,13 +96,13 @@ class ExperimentDualProcessor(ExperimentProcessor):
 
         header = [[{'id': "time", 'label': "time", 'type': "number"},{'id': "value", 'label': "Symmetry errors", 'type': "number"},{'id': "value", 'label': "Ball errors", 'type': "number"}],]
 #        data = self.get_data(res_sym, "error_sym", 4, 3, r)
-        data = self.get_data2d(res_ball, 5, 2, 4, ["error_sym", "error_ball"], range(1,20))
+        data = self.get_data2d(res_ball, 5, 1, 1, ["error_sym", "error_ball"], range(1,20))
         data.sort()
         processed.append({'data': header + data, 'title': 'Ball condition: Errors vs difficulty', 'var': 'Errors in time', 'type': 'line'})
  
         header = [[{'id': "time", 'label': "time", 'type': "number"},{'id': "value", 'label': "Symmetry time", 'type': "number"},{'id': "value", 'label': "Ball time", 'type': "number"}],]
 #        data = self.get_data(res_sym, "error_sym", 4, 3, r)
-        data = self.get_data2d(res_ball, 5, 2, 4, ["time_sym", "time_ball"], range(1,20), scaling=0.001)
+        data = self.get_data2d(res_ball, 5, 1, 1, ["time_sym", "time_ball"], range(1,20), scaling=0.001)
         data.sort()
         processed.append({'data': header + data, 'title': 'Ball condition: Errors vs time', 'var': 'Errors in time', 'type': 'line'})
 
